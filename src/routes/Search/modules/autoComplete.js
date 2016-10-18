@@ -22,6 +22,7 @@ export const textUpdated = createAction(TEXT_UPDATED)
 export const updatedSuggestions = createAction(UPDATED_SUGGESTIONS)
 
 const jsonpObservable = Observable.bindNodeCallback(jsonp)
+window.search = (term,fn) => jsonp(APP_CONFIG.YOUTUBE_AUTOCOMPLETE_ENDPOINT + term, (err, data) => fn(data))
 
 export function epic (actions$, store) {
   return actions$.ofType(TEXT_UPDATED)
@@ -32,6 +33,9 @@ export function epic (actions$, store) {
       .takeUntil(actions$.ofType(LOCATION_CHANGE, START_SEARCH)))
     .map(e => updatedSuggestions(e[1].map(f => f[0])))
 }
+
+window.epic = epic
+window.Observable = Observable
 
 export const actions = {
   // updateSearch

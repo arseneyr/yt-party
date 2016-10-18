@@ -6,6 +6,7 @@ import xhr from 'xhr'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { TEXT_UPDATED } from './autoComplete'
+import { VIDEO_QUEUED_START, DUPLICATE_VIDEO_QUEUED } from 'routes/Home/modules/queue'
 
 import APP_CONFIG from 'config'
 
@@ -73,14 +74,15 @@ const ACTION_HANDLERS = {
     searchInProgress: false,
     searchResults: payload.map(e => ({ ...e, selected: false }))
   }),
-  [SELECT_SEARCH_RESULT] : (state, payload) => {
+  [VIDEO_QUEUED_START] : (state, payload) => {
     const searchResults = [...state.searchResults]
     searchResults.find(e => e.id === payload).selected = true
     return { ...state, searchResults }
   },
+  [DUPLICATE_VIDEO_QUEUED] : (state, payload) => ({ ...state, duplicateItem: payload }),
   [LOCATION_CHANGE] : () => initialState
 }
 
-const initialState = { searchInProgress: false, searchResults: null, duplicateQueued: false }
+const initialState = { searchInProgress: false, searchResults: null, duplicateItem: null }
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)

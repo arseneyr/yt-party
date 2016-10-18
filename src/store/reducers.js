@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux'
 import locationReducer from './location'
-import { queueReducerShape } from 'routes/Home'
+import { reducerShape } from 'routes/Home'
 
 export const makeRootReducer = (asyncReducers) => {
   return combineReducers({
     location: locationReducer,
-    ...queueReducerShape,
+    ...reducerShape,
     ...asyncReducers
   })
 }

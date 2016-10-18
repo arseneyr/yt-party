@@ -47,8 +47,8 @@ export default (initialState = {}) => {
     })
 
     module.hot.accept('./epics', () => {
-      const rootEpic = require('./epics').rootEpic
-      epicMiddleware.replaceEpic(rootEpic)
+      const newRootEpic = require('./epics').rootEpic
+      epicMiddleware.replaceEpic(newRootEpic)
     })
   }
 

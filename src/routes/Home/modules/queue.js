@@ -25,7 +25,7 @@ export const canVideoBeQueued = (state, videoId) => {
 
 const ACTION_HANDLERS = {
   [QUEUE_UPDATED]: (state, payload) => ({ ...state, queue: payload }),
-
+  [VIDEO_QUEUED_START]: (state, payload) => ({ ...state, queue: state.queue.concat({ videoId: payload }) })
 }
 
 const initialState = { queue: [], pending: [] }

@@ -18,6 +18,10 @@ export class AutoComplete extends Component {
     suggestions   : PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
   }
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired
+  }
+
   updateText (searchText) {
     this.setState({ searchText })
     return this.props.textUpdated(searchText)
@@ -37,31 +41,35 @@ export class AutoComplete extends Component {
           : s }
     })
 
-    return <AppBar
-      iconElementLeft={<IconButton containerElement={<Link to='/' />}><ArrowBack /></IconButton>}
-      iconElementRight={this.state.searchText
-      ? <IconButton onTouchTap={() => {
-        this.updateText('')
-        this.refs.autoComplete.focus()
-      }}><CloseIcon /></IconButton>
-      : null}
-      title={
-        <MuiAutoComplete
-          ref='autoComplete'
-          inputStyle={{ ...fontStyle, color: '#ffffff' }}
-          dataSource={styledSuggestions}
-          underlineShow={false}
-          hintText='Search'
-          hintStyle={{ ...fontStyle, color: 'rgba(255, 255, 255, 0.4)' }}
-          fullWidth
-          onUpdateInput={text => this.updateText(text)}
-          menuCloseDelay={0}
-          autoFocus
-          searchText={this.state.searchText}
-          onNewRequest={selected => this.props.startSearch(typeof selected === 'string' ? selected : selected.text)}
-        />
-      }
-    />
+    return <div style={{height: this.context.muiTheme.appBar.height}}>
+      <AppBar
+        className='container'
+        style={{position: 'fixed', width: null}}
+        iconElementLeft={<IconButton containerElement={<Link to='/' />}><ArrowBack /></IconButton>}
+        iconElementRight={this.state.searchText
+        ? <IconButton onTouchTap={() => {
+          this.updateText('')
+          this.refs.autoComplete.focus()
+        }}><CloseIcon /></IconButton>
+        : null}
+        title={
+          <MuiAutoComplete
+            ref='autoComplete'
+            inputStyle={{ ...fontStyle, color: '#ffffff' }}
+            dataSource={styledSuggestions}
+            underlineShow={false}
+            hintText='Search'
+            hintStyle={{ ...fontStyle, color: 'rgba(255, 255, 255, 0.4)' }}
+            fullWidth
+            onUpdateInput={text => this.updateText(text)}
+            menuCloseDelay={0}
+            autoFocus
+            searchText={this.state.searchText}
+            onNewRequest={selected => this.props.startSearch(typeof selected === 'string' ? selected : selected.text)}
+          />
+        }
+      />
+    </div>
   }
 }
 
