@@ -3,9 +3,14 @@ const debug = require('debug')('app:server')
 const webpack = require('webpack')
 const webpackConfig = require('../build/webpack.config')
 const config = require('../config')
+const http = require('http')
+const Rx = require('rxjs')
 
 const app = express()
 const paths = config.utils_paths
+
+const server = http.createServer(app)
+const io = require('socket.io')(server)
 
 // This rewrites all routes requests to the root /index.html file
 // (ignoring file requests). If you want to implement universal
@@ -50,4 +55,13 @@ if (config.env === 'development') {
   app.use(express.static(paths.dist()))
 }
 
-module.exports = app
+io.on('connection', socket => {
+  const observable = Rx.Observable.create(obs => {
+    socket.conn.on('packet', packet => packet.data ? obs.next(packet.data) : null)
+    socket.on('disconnect', () => obs.complete())
+  })
+
+  observable.subscribe({next: console.log, complete: () => null, error: () => null})
+})
+
+module.exports = server

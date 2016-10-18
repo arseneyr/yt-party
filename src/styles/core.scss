@@ -5,6 +5,7 @@
 // Just remove them if they're not what you want
 html {
   box-sizing: border-box;
+  font-family: Roboto, sans-serif;
 }
 
 html,
@@ -18,4 +19,11 @@ body {
 *:before,
 *:after {
   box-sizing: inherit;
+}
+
+span[type=button] {
+  appearance: none;
+}
+a[type=button] {
+  appearance: none;
 }

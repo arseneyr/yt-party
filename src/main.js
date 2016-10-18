@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import createStore from './store/createStore'
 import AppContainer from './containers/AppContainer'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import config from 'config'
 
 // ========================================================
 // Store Instantiation
@@ -18,7 +20,9 @@ let render = () => {
   const routes = require('./routes/index').default(store)
 
   ReactDOM.render(
-    <AppContainer store={store} routes={routes} />,
+    <MuiThemeProvider>
+      <AppContainer store={store} routes={routes} />
+    </MuiThemeProvider>,
     MOUNT_NODE
   )
 }
@@ -61,6 +65,20 @@ if (__DEV__) {
     )
   }
 }
+
+//
+// Set up some material-ui hacks
+//
+import injectTapEventPlugin from 'react-tap-event-plugin'
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin()
+
+const socket = require('socket.io-client')(config.compiler_public_path)
+socket.on('connect', () => {
+  socket.emit('sup', {data: 'data'})
+})
 
 // ========================================================
 // Go!

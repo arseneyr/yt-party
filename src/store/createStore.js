@@ -3,12 +3,15 @@ import thunk from 'redux-thunk'
 import { browserHistory } from 'react-router'
 import makeRootReducer from './reducers'
 import { updateLocation } from './location'
+import { createEpicMiddleware } from 'redux-observable'
+import { rootEpic } from './epics'
 
 export default (initialState = {}) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk]
+  const epicMiddleware = createEpicMiddleware(rootEpic)
+  const middleware = [thunk, epicMiddleware]
 
   // ======================================================
   // Store Enhancers
@@ -41,6 +44,11 @@ export default (initialState = {}) => {
     module.hot.accept('./reducers', () => {
       const reducers = require('./reducers').default
       store.replaceReducer(reducers(store.asyncReducers))
+    })
+
+    module.hot.accept('./epics', () => {
+      const rootEpic = require('./epics').rootEpic
+      epicMiddleware.replaceEpic(rootEpic)
     })
   }
 
