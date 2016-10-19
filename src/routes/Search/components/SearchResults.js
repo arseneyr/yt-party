@@ -91,6 +91,9 @@ export class SearchResult extends Component {
     onClick: PropTypes.func.isRequired
   }
 
+  //
+  // binding like this avoids creating a new function on every render
+  //
   onClick = () => this.props.selected ? null : this.props.onClick(this.props.id)
 
   render () {
