@@ -2,29 +2,20 @@ import { Observable } from 'rxjs'
 import { createAction } from 'redux-actions'
 import { createDefaultReducer } from 'store/reducers'
 import { canVideoBeQueued } from 'routes/Home'
+import { combineEpics } from 'redux-observable'
 import xhr from 'xhr'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { TEXT_UPDATED } from './autoComplete'
-import { VIDEO_QUEUED_START, DUPLICATE_VIDEO_QUEUED } from 'routes/Home/modules/queue'
+import { VIDEO_QUEUED_START, DUPLICATE_VIDEO_QUEUED, requestSnackbar } from 'routes/Home/modules/queue'
 
 import APP_CONFIG from 'config'
 
 export const START_SEARCH = 'START_SEARCH'
 export const SEARCH_RESULTS = 'SEARCH_RESULTS'
-export const SELECT_SEARCH_RESULT = 'SELECT_SEARCH_RESULT'
-
-const standardSelectSearchResult = createAction(SELECT_SEARCH_RESULT)
 
 export const startSearch = createAction(START_SEARCH)
 export const searchResults = createAction(SEARCH_RESULTS)
-export const selectSearchResult = id => {
-  return (dispatch, getState) => {
-    if (canVideoBeQueued(getState(), id)) {
-      dispatch(standardSelectSearchResult(id))
-    }
-  }
-}
 
 const xhrObservable = Observable.bindNodeCallback(xhr)
 
@@ -53,15 +44,27 @@ function runSearch (query) {
     .map(e => e[0].body.items)
 }
 
-export function epic (actions$, store) {
-  return actions$.ofType(START_SEARCH)
+const duplicateEpic = (actions$, store) =>
+  actions$.ofType(DUPLICATE_VIDEO_QUEUED)
+  .map(action => {
+    const title = store.getState().search.searchResults.searchResults.find(e => e.id === action.payload.id).title
+    return requestSnackbar({ message: `Already queued "${title}"`, timeout: 3000 })
+  })
+
+const videoQueuedEpic = (actions$, store) =>
+  actions$.ofType(VIDEO_QUEUED_START)
+  .map()
+
+const searchEpic = (actions$, store) =>
+  actions$.ofType(START_SEARCH)
     .filter(action => action.payload.length > 0)
     .mergeMap(action => runSearch(action.payload).takeUntil(actions$.ofType(LOCATION_CHANGE)))
     .map(results => searchResults(results.map(e => ({
       id: e.id.videoId,
       title: e.snippet.title,
       thumbnailUrl: e.snippet.thumbnails.medium.url }))))
-}
+
+export const epic = combineEpics(duplicateEpic, searchEpic)
 
 const ACTION_HANDLERS = {
   [TEXT_UPDATED] : state => ({
@@ -76,13 +79,12 @@ const ACTION_HANDLERS = {
   }),
   [VIDEO_QUEUED_START] : (state, payload) => {
     const searchResults = [...state.searchResults]
-    searchResults.find(e => e.id === payload).selected = true
+    searchResults.find(e => e.id === payload.id).selected = true
     return { ...state, searchResults }
   },
-  [DUPLICATE_VIDEO_QUEUED] : (state, payload) => ({ ...state, duplicateItem: payload }),
   [LOCATION_CHANGE] : () => initialState
 }
 
-const initialState = { searchInProgress: false, searchResults: null, duplicateItem: null }
+const initialState = { searchInProgress: false, searchResults: null }
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)
