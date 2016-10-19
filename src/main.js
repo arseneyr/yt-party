@@ -4,6 +4,12 @@ import createStore from './store/createStore'
 import AppContainer from './containers/AppContainer'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import config from 'config'
+import { Observable } from 'rxjs'
+import { throttleTimeDistinct } from './observable'
+
+Observable.prototype.throttleTimeDistinct = throttleTimeDistinct
+
+window.Observable = Observable
 
 // ========================================================
 // Store Instantiation
