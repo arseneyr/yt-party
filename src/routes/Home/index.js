@@ -5,9 +5,8 @@ import reducer, { epic } from './modules/queue'
 
 export const reducerShape = { queue: reducer }
 
-injectEpic(epic)
-
 // Sync route definition
-export default {
-    component : Home
+export default store => {
+  injectEpic(store, epic)
+  return { component : Home }
 }

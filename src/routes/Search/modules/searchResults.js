@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs'
-import { createAction } from 'redux-actions'
 import { createDefaultReducer } from 'store/reducers'
 import { canVideoBeQueued } from 'routes/Home'
 import { combineEpics } from 'redux-observable'
 import xhr from 'xhr'
+import Immutable from 'immutable'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { TEXT_UPDATED } from './autoComplete'
@@ -13,6 +13,8 @@ import APP_CONFIG from 'config'
 
 export const START_SEARCH = 'START_SEARCH'
 export const SEARCH_RESULTS = 'SEARCH_RESULTS'
+
+const createAction = action => (...args) => ({ type: action, payload: Immutable.fromJS(args.length === 1 ? args[0] : args) })
 
 export const startSearch = createAction(START_SEARCH)
 export const searchResults = createAction(SEARCH_RESULTS)
@@ -47,8 +49,7 @@ function runSearch (query) {
 const duplicateEpic = (actions$, store) =>
   actions$.ofType(DUPLICATE_VIDEO_QUEUED)
   .map(action => {
-    const title = store.getState().search.searchResults.searchResults.find(e => e.id === action.payload.id).title
-    return requestSnackbar({ message: `Already queued "${title}"`, timeout: 3000 })
+    return requestSnackbar({ message: `Already queued "${action.payload.get('title')}"`, timeout: 3000 })
   })
 
 const videoQueuedEpic = (actions$, store) =>
@@ -67,24 +68,21 @@ const searchEpic = (actions$, store) =>
 export const epic = combineEpics(duplicateEpic, searchEpic)
 
 const ACTION_HANDLERS = {
-  [TEXT_UPDATED] : state => ({
-    ...state,
+  [TEXT_UPDATED] : state => state.merge({
     searchInProgress: false,
     searchResults: null }),
-  [START_SEARCH] : state => ({ ...state, searchInProgress: true, searchResults: null }),
-  [SEARCH_RESULTS] : (state, payload) => ({
-    ...state,
+  [START_SEARCH] : state => state.merge({ searchInProgress: true, searchResults: null }),
+  [SEARCH_RESULTS] : (state, payload) => state.merge({
     searchInProgress: false,
-    searchResults: payload.map(e => ({ ...e, selected: false }))
+    searchResults: payload.map(e => Immutable.Map({ video: e, selected: false }))
   }),
   [VIDEO_QUEUED_START] : (state, payload) => {
-    const searchResults = [...state.searchResults]
-    searchResults.find(e => e.id === payload.id).selected = true
-    return { ...state, searchResults }
+    const index = state.get('searchResults').findIndex(e => e.get('video').equals(payload))
+    return state.update('searchResults', r => r.update(index, m => m.set('selected', true)))
   },
   [LOCATION_CHANGE] : () => initialState
 }
 
-const initialState = { searchInProgress: false, searchResults: null }
+const initialState = Immutable.fromJS({ searchInProgress: false, searchResults: null })
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)

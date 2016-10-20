@@ -18,7 +18,7 @@ CoreLayout2.propTypes = {
 export class CoreLayout extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { snackbar: null, message: null }
+    this.state = { snackbar: null, open: false }
   }
 
   static propTypes = {
@@ -27,22 +27,25 @@ export class CoreLayout extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.snackbar !== this.state.snackbar) {
-      this.setState({ snackbar: nextProps.snackbar, message: nextProps.snackbar.message})
+    if (nextProps.snackbar && !nextProps.snackbar.equals(this.state.snackbar)) {
+      this.setState({ snackbar: nextProps.snackbar, open: true })
     } else {
-      //this.setState( { ...this.state, renderSnackbar: false } )
+      this.setState({ open: false })
     }
   }
 
   render () {
     return <div className='container text-center'>
       {this.props.children}
-      {this.state.message
-        ? <Snackbar open message={this.state.message} autoHideDuration={this.props.snackbar.timeout} />
+      { this.props.snackbar
+        ? <Snackbar
+            open={this.state.open}
+            message={this.props.snackbar.get('message')}
+            autoHideDuration={this.props.snackbar.get('timeout')} />
         : null
       }
     </div>
   }
 }
 
-export default connect( state => ({ snackbar: state.queue.snackbar }) )(CoreLayout)
+export default connect( state => ({ snackbar: state.getIn(['queue', 'snackbar']) }) )(CoreLayout)

@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react'
+import ImmutablePropTypes from 'react-immutable-proptypes'
 import './HomeView.scss'
 import { Card, CardMedia, CardTitle, FloatingActionButton, Subheader, List } from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import VideoListItem from 'components/VideoListItem'
 import { Link } from 'react-router'
 
-export const HomeView = (props, context) => (
+export const HomeView = ({ queue }, context) => (
   <div>
     <Card zDepth={3} style={{ position: 'relative' }}>
       <CardMedia
@@ -25,18 +26,33 @@ export const HomeView = (props, context) => (
     </Card>
     <List>
       <Subheader>Up Next</Subheader>
-      <VideoListItem
-        key={0}
-        title='sup'
-        thumbnailUrl='http://img.youtube.com/vi/u-2ckLBV21g/maxresdefault.jpg'
-        secondaryText={['Queued by ', <b>dudebro</b>]}
-      />
+      {queue.toArray().map(v =>
+        <VideoListItem
+          disabled
+          key={v.getIn(['video','id'])}
+          title={v.getIn(['video','title'])}
+          thumbnailUrl={v.getIn(['video','thumbnailUrl'])}
+          secondaryText={v.has('queuedBy') ? <b key={v.getIn(['video','id'])}>{v.get('queuedBy')}</b> : null}
+        />
+      )}
     </List>
   </div>
 )
 
 HomeView.contextTypes = {
   muiTheme: PropTypes.object.isRequired
+}
+
+HomeView.propTypes = {
+  queue: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+    video: ImmutablePropTypes.contains({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string.isRequired
+    }),
+    owned: PropTypes.bool.isRequired,
+    queuedBy: PropTypes.string
+  }).isRequired).isRequired
 }
 
 export default HomeView

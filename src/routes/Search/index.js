@@ -1,7 +1,7 @@
 import { injectReducer } from '../../store/reducers'
 import { injectEpic } from '../../store/epics'
 import { combineEpics } from 'redux-observable'
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux-immutable'
 
 export default (store) => ({
   path : 'search',
@@ -26,7 +26,8 @@ export default (store) => ({
         reducer: combineReducers({ autoComplete, searchResults })
       })
 
-      injectEpic(combineEpics(autoCompleteEpic, searchResultsEpic))
+      injectEpic(store, autoCompleteEpic)
+      injectEpic(store, searchResultsEpic)
 
       /*  Return getComponent   */
       cb(null, Search)

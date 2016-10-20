@@ -3,16 +3,18 @@
 // ------------------------------------
 import jsonp from 'jsonp'
 import { Observable } from 'rxjs'
-import { createAction } from 'redux-actions'
 import { createDefaultReducer } from 'store/reducers'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { START_SEARCH } from './searchResults'
+import Immutable from 'immutable'
 
 import APP_CONFIG from 'config'
 
 export const TEXT_UPDATED = 'TEXT_UPDATED'
 export const UPDATED_SUGGESTIONS = 'UPDATED_SUGGESTIONS'
+
+const createAction = action => (...args) => ({ type: action, payload: Immutable.fromJS(args.length === 1 ? args[0] : args) })
 
 // ------------------------------------
 // Actions
@@ -45,16 +47,14 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [TEXT_UPDATED] : (state, payload) => ({
-    ...state,
-    searchText: payload }),
-  [UPDATED_SUGGESTIONS] : (state, payload) => ({ ...state, suggestions: payload }),
+  [TEXT_UPDATED] : (state, payload) => state.set('searchText', payload),
+  [UPDATED_SUGGESTIONS] : (state, payload) => state.set('suggestions', payload),
   [LOCATION_CHANGE] : () => initialState
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = { searchText: '', suggestions: [] }
+const initialState = Immutable.fromJS({ searchText: '', suggestions: [] })
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)

@@ -12,16 +12,15 @@ import { tryQueueVideo } from 'routes/Home/modules/queue'
 import AutoComplete from '../components/AutoComplete'
 const AutoCompleteContainer = connect(
   state => ({
-    suggestions: state.search.autoComplete.suggestions
+    suggestions: state.getIn(['search','autoComplete','suggestions'])
   }),
   { textUpdated, startSearch })(AutoComplete)
 
 import SearchResults from '../components/SearchResults'
 const SearchResultsContainer = connect(
   state => ({
-    searchResults: state.search.searchResults.searchResults,
-    searchInProgress: state.search.searchResults.searchInProgress,
-    duplicateItem: state.search.searchResults.duplicateItem
+    searchResults: state.getIn(['search','searchResults','searchResults']),
+    searchInProgress: state.getIn(['search','searchResults','searchInProgress'])
   }),
   { tryQueueVideo })(SearchResults)
 
