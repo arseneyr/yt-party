@@ -1,6 +1,7 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux-immutable'
 import locationReducer from './location'
 import { reducerShape } from 'routes/Home'
+import { fromJS } from 'immutable'
 
 export const makeRootReducer = (asyncReducers) => {
   return combineReducers({
@@ -21,6 +22,11 @@ export function createDefaultReducer(actionHandlers, initialState) {
     const handler = actionHandlers[action.type]
     return handler ? handler(state, action.payload) : state
   }
+}
+
+
+export function createAction (action) {
+  return (...args) => ({ type: action, payload: fromJS(args.length === 1 ? args[0] : args) })
 }
 
 export default makeRootReducer

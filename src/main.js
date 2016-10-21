@@ -6,10 +6,9 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import config from 'config'
 import { Observable } from 'rxjs'
 import { throttleTimeDistinct } from './observable'
+import socket from './socket'
 
 Observable.prototype.throttleTimeDistinct = throttleTimeDistinct
-
-window.Observable = Observable
 
 // ========================================================
 // Store Instantiation
@@ -80,13 +79,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin()
-
-const socket = require('socket.io-client')(config.compiler_public_path)
-socket.on('connect', () => {
-  socket.emit('sup', {data: 'data'})
-})
-
 // ========================================================
 // Go!
 // ========================================================
 render()
+
+socket()

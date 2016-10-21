@@ -5,8 +5,9 @@ import makeRootReducer from './reducers'
 import { updateLocation } from './location'
 import { createEpicMiddleware } from 'redux-observable'
 import { rootEpic } from './epics'
+import { Map, Set } from 'immutable'
 
-export default (initialState = {}) => {
+export default (initialState = Map()) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
@@ -36,6 +37,7 @@ export default (initialState = {}) => {
     )
   )
   store.asyncReducers = {}
+  store.epics = Set()
 
   // To unsubscribe, invoke `store.unsubscribeHistory()` anytime
   store.unsubscribeHistory = browserHistory.listen(updateLocation(store))

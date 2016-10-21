@@ -28,7 +28,7 @@ export class AutoComplete extends Component {
   }
 
   render () {
-    const styledSuggestions = this.props.suggestions.map(s => {
+    const styledSuggestions = this.props.suggestions.toArray().map(s => {
       const searchText = this.state.searchText
       const loc = s.indexOf(searchText)
       return {

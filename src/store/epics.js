@@ -7,4 +7,9 @@ export const rootEpic = (action$, store) =>
     epic(action$, store)
   )
 
-export const injectEpic = newEpic => epic$.next(newEpic)
+export const injectEpic = (store, newEpic) => {
+  if (!store.epics.has(newEpic)) {
+    store.epics = store.epics.add(newEpic)
+    epic$.next(newEpic)
+  }
+}

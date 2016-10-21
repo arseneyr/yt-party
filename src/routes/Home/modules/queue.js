@@ -1,39 +1,32 @@
-import { createAction } from 'redux-actions'
-import { createDefaultReducer } from 'store/reducers'
+import { createDefaultReducer, createAction } from 'store/reducers'
+import Immutable from 'immutable'
+
+import { USERNAME_RESPONSE } from 'layouts/CoreLayout'
 
 export const QUEUE_UPDATED = 'QUEUE_UPDATED'
 export const VIDEO_QUEUED_START = 'VIDEO_QUEUED_START'
 export const DUPLICATE_VIDEO_QUEUED = 'DUPLICATE_VIDEO_QUEUED'
-export const REQUEST_SNACKBAR = 'REQUEST_SNACKBAR'
-export const SNACKBAR_POP = 'SNACKBAR_POP'
 
 export const queueUpdated = createAction(QUEUE_UPDATED)
 const videoQueuedStart = createAction(VIDEO_QUEUED_START)
 const duplicateVideoQueued = createAction(DUPLICATE_VIDEO_QUEUED)
-export const popSnackbar = createAction(SNACKBAR_POP)
-export const requestSnackbar = createAction(REQUEST_SNACKBAR)
 
 export const tryQueueVideo = video => (dispatch, getState) => {
-  const state = getState().queue
-  if (state.queue.find(v => v.videoId === video.id) ||
-      state.pending.find(v => v.videoId === video.id)) {
+  const state = getState().get('queue')
+  if (state.get('queue').find(e => e.get('video').equals(video)) ||
+      state.get('pending').find(e => e.get('video').equals(video))) {
         dispatch(duplicateVideoQueued(video))
       } else {
         dispatch(videoQueuedStart(video))
       }
 }
 
-export const epic = (actions$, store) =>
-  actions$.ofType(REQUEST_SNACKBAR)
-    .throttleTimeDistinct(2000, (x,y) => x.payload.message === y.payload.message)
-    .map(e => popSnackbar(e.payload))
-
 const ACTION_HANDLERS = {
   [QUEUE_UPDATED]: (state, payload) => ({ ...state, queue: payload }),
-  [VIDEO_QUEUED_START]: (state, payload) => ({ ...state, queue: state.queue.concat({ videoId: payload.id }) }),
-  [SNACKBAR_POP]: (state, payload) => ({ ...state, snackbar: payload })
+  [VIDEO_QUEUED_START]: (state, payload) => state.update('queue', l => l.push(Immutable.Map({video: payload}))),
+  [USERNAME_RESPONSE]: (state, payload) => payload.get('valid') ? state.set('username', payload.get('username')) : state
 }
 
-const initialState = { queue: [], pending: [], snackbar: null }
+const initialState = Immutable.fromJS({ queue: [], pending: [], username: null})
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)

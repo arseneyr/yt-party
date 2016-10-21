@@ -6,9 +6,11 @@ import CheckIcon from 'material-ui/svg-icons/action/check-circle'
 export class SearchResultList extends Component {
   static propTypes = {
     searchResults: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      thumbnailUrl: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      video: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        thumbnailUrl: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+      }).isRequired,
       selected: PropTypes.bool.isRequired
     }).isRequired),
     searchInProgress: PropTypes.bool.isRequired,
@@ -21,12 +23,13 @@ export class SearchResultList extends Component {
 
   render () {
     if (this.props.searchResults) {
-      if (this.props.searchResults.length > 0) {
+      if (this.props.searchResults.size > 0) {
         return <List key='list'>
-          {this.props.searchResults.map(r =>
+          {this.props.searchResults.toArray().map(r =>
             <SearchResult
-              {...r}
-              key={r.id}
+              video={r.get('video')}
+              selected={r.get('selected')}
+              key={r.getIn(['video','id'])}
               onClick={this.props.tryQueueVideo}
             />)}
         </List>
@@ -44,9 +47,11 @@ export class SearchResultList extends Component {
 
 export class SearchResult extends Component {
   static propTypes = {
-    id: PropTypes.string.isRequired,
-    thumbnailUrl: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    video: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      thumbnailUrl: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    }).isRequired,
     selected: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired
   }
@@ -56,16 +61,12 @@ export class SearchResult extends Component {
   //
   onClick = () => this.props.selected
     ? null
-    : this.props.onClick({
-      id: this.props.id,
-      title: this.props.title,
-      thumbnailUrl: this.props.thumbnailurl
-    })
+    : this.props.onClick(this.props.video)
 
   render () {
     return <VideoListItem
-      title={<b key={this.props.id}>{this.props.title}</b>}
-      thumbnailUrl={this.props.thumbnailUrl}
+      title={<b key={this.props.video.get('id')}>{this.props.video.get('title')}</b>}
+      thumbnailUrl={this.props.video.get('thumbnailUrl')}
       rightIcon={this.props.selected ? <CheckIcon /> : null}
       onTouchTap={this.onClick}
     />
