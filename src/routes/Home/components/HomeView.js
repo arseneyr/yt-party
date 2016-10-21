@@ -50,9 +50,10 @@ HomeView.propTypes = {
       title: PropTypes.string.isRequired,
       thumbnailUrl: PropTypes.string.isRequired
     }),
-    owned: PropTypes.bool.isRequired,
-    queuedBy: PropTypes.string
-  }).isRequired).isRequired
+    owner: PropTypes.string.isRequired
+  }).isRequired).isRequired,
+  userId: PropTypes.string.isRequired,
+  admin: PropTypes.bool.isRequired
 }
 
 export default HomeView

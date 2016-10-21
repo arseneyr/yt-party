@@ -24,9 +24,9 @@ export const tryQueueVideo = video => (dispatch, getState) => {
 const ACTION_HANDLERS = {
   [QUEUE_UPDATED]: (state, payload) => ({ ...state, queue: payload }),
   [VIDEO_QUEUED_START]: (state, payload) => state.update('queue', l => l.push(Immutable.Map({video: payload}))),
-  [USERNAME_RESPONSE]: (state, payload) => payload.get('valid') ? state.set('username', payload.get('username')) : state
+  [USERNAME_RESPONSE]: (state, payload) => payload.get('valid') ? state.set('userId', payload.get('userId')) : state
 }
 
-const initialState = Immutable.fromJS({ queue: [], pending: [], username: null})
+const initialState = Immutable.fromJS({ queue: [], pending: [], userId: null, admin: false})
 
 export default createDefaultReducer(ACTION_HANDLERS, initialState)
