@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { createDefaultReducer } from 'store/reducers'
+import { createDefaultReducer, createAction } from 'store/reducers'
 import { canVideoBeQueued } from 'routes/Home'
 import { combineEpics } from 'redux-observable'
 import xhr from 'xhr'
@@ -7,14 +7,13 @@ import Immutable from 'immutable'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { TEXT_UPDATED } from './autoComplete'
-import { VIDEO_QUEUED_START, DUPLICATE_VIDEO_QUEUED, requestSnackbar } from 'routes/Home/modules/queue'
+import { VIDEO_QUEUED_START, DUPLICATE_VIDEO_QUEUED } from 'routes/Home/modules/queue'
+import { requestSnackbar } from 'layouts/CoreLayout'
 
 import APP_CONFIG from 'config'
 
 export const START_SEARCH = 'START_SEARCH'
 export const SEARCH_RESULTS = 'SEARCH_RESULTS'
-
-const createAction = action => (...args) => ({ type: action, payload: Immutable.fromJS(args.length === 1 ? args[0] : args) })
 
 export const startSearch = createAction(START_SEARCH)
 export const searchResults = createAction(SEARCH_RESULTS)

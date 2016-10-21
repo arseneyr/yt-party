@@ -3,7 +3,7 @@
 // ------------------------------------
 import jsonp from 'jsonp'
 import { Observable } from 'rxjs'
-import { createDefaultReducer } from 'store/reducers'
+import { createDefaultReducer, createAction } from 'store/reducers'
 
 import { LOCATION_CHANGE } from 'store/location'
 import { START_SEARCH } from './searchResults'
@@ -13,8 +13,6 @@ import APP_CONFIG from 'config'
 
 export const TEXT_UPDATED = 'TEXT_UPDATED'
 export const UPDATED_SUGGESTIONS = 'UPDATED_SUGGESTIONS'
-
-const createAction = action => (...args) => ({ type: action, payload: Immutable.fromJS(args.length === 1 ? args[0] : args) })
 
 // ------------------------------------
 // Actions
