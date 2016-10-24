@@ -5,12 +5,28 @@ const webpackConfig = require('../build/webpack.config')
 const config = require('../config')
 const http = require('http')
 const Rx = require('rxjs')
+const path = require('path')
+const cookieParser = require('cookie-parser')
+const nedb = require('nedb')
 
 const app = express()
 const paths = config.utils_paths
 
 const server = http.createServer(app)
 const io = require('socket.io')(server)
+
+app.get('/player', (req,res) => res.sendFile(path.join(__dirname, '../src/player.html')))
+
+app.use(cookieParser('this.is.bad.secret'))
+
+app.get('/', (req,res,next) => {
+  if (!req.signedCookies.userId) {
+    const userId = Math.random().toString(36).substr(2,7)
+    res.cookie('userId', userId, {httpOnly: true, signed: true, maxAge: 1000*60*60*24})
+    req.signedCookies.userId = userId
+  }
+  next()
+})
 
 // This rewrites all routes requests to the root /index.html file
 // (ignoring file requests). If you want to implement universal
@@ -55,13 +71,38 @@ if (config.env === 'development') {
   app.use(express.static(paths.dist()))
 }
 
+let db = {}
+
+db.queue = new nedb({filename: 'queue.db', autoload:true})
+db.users = new nedb({filename: 'users.db', autoload:true})
+
 io.on('connection', socket => {
-  const observable = Rx.Observable.create(obs => {
-    socket.conn.on('packet', packet => packet.data ? obs.next(packet.data) : null)
-    socket.on('disconnect', () => obs.complete())
+  let req = socket.handshake
+  let res = {}
+  cookieParser('this.is.bad.secret')(req, res, () => {})
+  const userId = req.signedCookies.userId
+  socket.on('get-userid', (cb) => {
+    db.users.findOne({ _id: userId }, (err, doc) => {
+      if (doc) {
+        cb({ valid: true, userId, admin: doc.admin })
+      } else {
+        cb({ valid: false })
+      }
+    })
   })
 
-  observable.subscribe({next: console.log, complete: () => null, error: () => null})
+  socket.on('set-username', (data, cb) => {
+    db.users.findOne({ username: data }, (err, doc) => {
+      if (doc) {
+        cb({valid: false})
+      } else {
+        db.users.insert({_id: userId, username: data, admin: false}, () => cb({ valid: true, userId, admin:(username === 'bad hombre') }))
+      }
+    })
+  })
+
+  socket.on('add-video', (data, cb) => {
+  })
 })
 
 module.exports = server

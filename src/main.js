@@ -71,6 +71,9 @@ if (__DEV__) {
   }
 }
 
+
+socket(store)
+
 //
 // Set up some material-ui hacks
 //
@@ -84,4 +87,3 @@ injectTapEventPlugin()
 // ========================================================
 render()
 
-socket()

@@ -81,6 +81,7 @@ export class CoreLayout extends React.Component {
         <form onSubmit={this.state.errorText === '' ? this.submitUsername : e => e.preventDefault()} style={{ height:'62px' }}>
         <TextField
           autoFocus
+          fullWidth
           ref={i => this._input = i}
           hintText='Cool nickname'
           errorText={this.state.errorText}
