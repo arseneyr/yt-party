@@ -3,10 +3,13 @@
     "allowJs": true,
     "target": "es6",
     "jsx": "preserve",
-    "noImplicitAny": true,
-    "module": "es6"
+    "module": "es6",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "app",
+    "moduleResolution": "node"
   },
+
   "include": [
-    "src/**/*"
+    "app/**/*"
   ]
 }
