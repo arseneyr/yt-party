@@ -18,10 +18,13 @@ module.exports = (options) => ({
   }, options.output), // Merge with env dependent settings
   module: {
     loaders: [{
-      test: /\.js$/, // Transform all .js files required somewhere with Babel
-      loader: 'babel',
+      test: /\.tsx?$/, // Transform all .js files required somewhere with Babel
+      loaders: ['babel?' + JSON.stringify(options.babelQuery), 'ts-loader'],
       exclude: /node_modules/,
-      query: options.babelQuery,
+    }, {
+      test: /\.js$/, // Transform all .js files required somewhere with Babel
+      loader: 'babel?' + JSON.stringify(options.babelQuery),
+      exclude: /node_modules/,
     }, {
       // Transform our own .css files with PostCSS and CSS-modules
       test: /\.css$/,
@@ -86,6 +89,8 @@ module.exports = (options) => ({
       '',
       '.js',
       '.jsx',
+      '.ts',
+      '.tsx',
       '.react.js',
     ],
     mainFields: [
