@@ -68,5 +68,6 @@ export function getAsyncInjectors(store) {
 
   return {
     injectReducer: injectAsyncReducer(store, true),
+    injectSagas: injectAsyncSagas(store, true),
   };
 }

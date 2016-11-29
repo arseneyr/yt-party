@@ -5,11 +5,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-// PostCSS plugins
-const cssnext = require('postcss-cssnext');
-const postcssFocus = require('postcss-focus');
-const postcssReporter = require('postcss-reporter');
-
 module.exports = (options) => ({
   entry: options.entry,
   output: Object.assign({ // Compile into js/build.js
@@ -18,18 +13,14 @@ module.exports = (options) => ({
   }, options.output), // Merge with env dependent settings
   module: {
     loaders: [{
-      test: /\.tsx?$/, // Transform all .js files required somewhere with Babel
+      test: /\.tsx?$/, // Transform all .ts(x) files required somewhere with ts-loader, Babel
       loaders: ['babel?' + JSON.stringify(options.babelQuery), 'ts-loader'],
       exclude: /node_modules/,
     }, {
       test: /\.js$/, // Transform all .js files required somewhere with Babel
-      loader: 'babel?' + JSON.stringify(options.babelQuery),
+      loader: 'babel',
       exclude: /node_modules/,
-    }, {
-      // Transform our own .css files with PostCSS and CSS-modules
-      test: /\.css$/,
-      exclude: /node_modules/,
-      loader: options.cssLoaders,
+      query: options.babelQuery,
     }, {
       // Do not transform vendor's CSS with CSS-modules
       // The point is that they remain in global scope.
@@ -73,20 +64,11 @@ module.exports = (options) => ({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       },
     }),
+    new webpack.NamedModulesPlugin(),
   ]),
-  postcss: () => [
-    postcssFocus(), // Add a :focus to every :hover
-    cssnext({ // Allow future CSS features to be used, also auto-prefixes the CSS...
-      browsers: ['last 2 versions', 'IE > 10'], // ...based on this browser list
-    }),
-    postcssReporter({ // Posts messages from plugins to the terminal
-      clearMessages: true,
-    }),
-  ],
   resolve: {
     modules: ['app', 'node_modules'],
     extensions: [
-      '',
       '.js',
       '.jsx',
       '.ts',
@@ -94,12 +76,11 @@ module.exports = (options) => ({
       '.react.js',
     ],
     mainFields: [
+      'browser',
       'jsnext:main',
       'main',
     ],
   },
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
-  stats: false, // Don't show stats in the console
-  progress: true,
 });
