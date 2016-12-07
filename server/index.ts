@@ -5,13 +5,18 @@ import * as devMiddleware from 'webpack-dev-middleware';
 import * as hotMiddleware from 'webpack-hot-middleware';
 
 import * as webpack from 'webpack';
-import config from './webpack.config.dev';
+import devConfig from './webpack.config.dev';
+import prodConfig from './webpack.config.prod';
+
+const isProd = process.env.NODE_ENV === 'production';
+const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
-//compiler.run((err,stats) => {console.log("err: " + err);console.log("stats: " + stats)});
-
 app.use(historyMiddleware());
-app.use(hotMiddleware(compiler));
+if (isProd) {
+  app.use(hotMiddleware(compiler));
+}
+
 app.use(devMiddleware(compiler, {
   noInfo: false,
   publicPath: config.output.publicPath,

@@ -1,17 +1,15 @@
 import * as webpack from 'webpack';
-import base from './webpack.config.base';
 import * as LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
+import * as merge from 'webpack-merge';
+import base from './webpack.config.base';
 
 const config: webpack.Configuration = {
-  ...base,
   devtool: 'eval-source-map',
   entry: [
     'react-hot-loader/patch',
-    'webpack-hot-middleware/client',
-    ...[].concat(base.entry)
+    'webpack-hot-middleware/client'
   ],
   plugins: [
-    ...base.plugins,
     new webpack.HotModuleReplacementPlugin(),
     new LoaderOptionsPlugin({
       debug: true
@@ -22,7 +20,15 @@ const config: webpack.Configuration = {
       },
       DEVELOPMENT: true
     })
-  ]
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  }
 };
 
-export default config;
+export default merge.smart(config, base);
