@@ -5,7 +5,7 @@ export default {
   prevStep: () => ({
     type: 'PREVIOUS'
   }),
-  setLocation: (routerState, action = 'PUSH') => ({
+  setLocation: (routerState: any, action = 'PUSH') => ({
     type: 'LOCATION_CHANGE',
     router: {
       action,

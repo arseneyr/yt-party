@@ -8,14 +8,19 @@ import appReducer from './reducer';
 
 import App from './app';
 
-const store = createStore(appReducer);
+const devTools = DEVELOPMENT ? window.__REDUX_DEVTOOLS_EXTENSION__ : undefined;
+if (devTools) {
+  devTools.open();
+}
+
+const store = createStore(appReducer, devTools && devTools());
 
 const rootEl = document.getElementById('root');
-const renderApp = () => {
+const renderApp = (Component = App) => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <App />
+        <Component />
       </Provider>
     </AppContainer>,
     rootEl
@@ -24,10 +29,14 @@ const renderApp = () => {
 
 if (module.hot) {
   module.hot.accept('./reducer', () => {
-    store.replaceReducer(appReducer);
+    const nextReducer = require('./reducer').default;
+    store.replaceReducer(nextReducer);
   });
 
-  module.hot.accept('./app', renderApp);
+  module.hot.accept('./app', () => {
+    const NextApp = require('./app').default;
+    renderApp(NextApp);
+  })
 }
 
 renderApp();

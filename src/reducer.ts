@@ -1,10 +1,10 @@
-import { combineReducers } from 'redux';
+import { combineReducers, Action } from 'redux';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const history = createBrowserHistory();
 
 
-const counterStore = (state = 1, action) => {
+const counterStore = (state = 1, action: Action) => {
   switch (action.type) {
     case 'NEXT':
       return state + 1;
@@ -22,10 +22,10 @@ const routerDefaultState = {
   action: history.action
 }
 
-const routerStore = (state = routerDefaultState, action) => {
+const routerStore = (state = routerDefaultState, action: Action) => {
   switch (action.type) {
     case 'LOCATION_CHANGE':
-      return Object.assign({}, state, action.router);
+      return Object.assign({}, state, (<any>action).router);
     default:
       return state;
   }

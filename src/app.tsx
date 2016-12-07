@@ -9,12 +9,12 @@ import Home from './routes/home';
 import Counter from './routes/counter';
 
 
-const App = ({ router, setLocation }) => (
+const App = ({ router, setLocation }: any) => (
   <Router
     history={router.history}
     location={router.location}
     action={router.action}
-    onChange={(routerState, action) => {
+    onChange={(routerState: any, action: any) => {
       // https://github.com/ReactTraining/react-router-addons-controlled/blob/master/redux-example/index.js#L55
       setLocation(routerState, action === 'SYNC' ? router.action : action);
     }}
@@ -26,14 +26,16 @@ const App = ({ router, setLocation }) => (
   </Router>
 );
 
-const stateToProps = ({ router }) => {
-  return { router };
-};
+const stateToProps = ({ router }: any) => ({ router });
 
-const dispatchToProps = (dispatch) => {
+/*const dispatchToProps = (dispatch: any) => {
   return {
-    setLocation: (routerState, action) => dispatch(actions.setLocation(routerState, action))
+    setLocation: (routerState: any, action: any) => dispatch(actions.setLocation(routerState, action))
   }
+}*/
+
+const dispatchToProps = {
+  setLocation: actions.setLocation
 }
 
 export default connect(stateToProps, dispatchToProps)(App);

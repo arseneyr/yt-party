@@ -4,7 +4,7 @@ import actions from '../actions';
 import { connect } from 'react-redux';
 
 
-const Counter = ({ counter, dispatch }) => (
+const Counter = ({ counter, dispatch }: any) => (
   <div>
     <h1>Counter</h1>
     {counter}
@@ -22,7 +22,7 @@ const Counter = ({ counter, dispatch }) => (
   </div>
 );
 
-const stateToProps = ({ counter }) => {
+const stateToProps = ({ counter }: any) => {
   return { counter };
 };
 
