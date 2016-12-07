@@ -16,7 +16,7 @@ const config: Configuration = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve('./index.html')
+      template: path.resolve(srcPath, './index.html')
     })
   ],
   resolve: {
@@ -34,7 +34,7 @@ const config: Configuration = {
         use: 'babel-loader',
         include: srcPath,
         options: {
-          presets: ['es2015', 'react']
+          presets: [[ 'es2015', { modules: false } ], 'react']
         }
       },
       {
