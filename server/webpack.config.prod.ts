@@ -6,6 +6,10 @@ import base from './webpack.config.base';
 
 const config: webpack.Configuration = {
   devtool: 'source-map',
+  output: {
+    filename: '[name].[chunkhash].js',
+    sourceMapFilename: '../sourceMaps/[name].[chunkhash].map'
+  },
   plugins: [
     new LoaderOptionsPlugin({
       debug: false,
@@ -35,7 +39,8 @@ const config: webpack.Configuration = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       },
       DEVELOPMENT: false
-    })
+    }),
+    new ExtractTextPlugin('styles.[contenthash].css')
   ],
   module: {
     rules: [

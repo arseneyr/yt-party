@@ -8,6 +8,7 @@ import actions from './actions';
 import Home from './routes/home';
 import Counter from './routes/counter';
 
+import '../styles/main.css';
 
 const App = ({ router, setLocation }: any) => (
   <Router
@@ -27,12 +28,6 @@ const App = ({ router, setLocation }: any) => (
 );
 
 const stateToProps = ({ router }: any) => ({ router });
-
-/*const dispatchToProps = (dispatch: any) => {
-  return {
-    setLocation: (routerState: any, action: any) => dispatch(actions.setLocation(routerState, action))
-  }
-}*/
 
 const dispatchToProps = {
   setLocation: actions.setLocation

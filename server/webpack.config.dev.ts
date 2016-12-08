@@ -5,6 +5,9 @@ import base from './webpack.config.base';
 
 const config: webpack.Configuration = {
   devtool: 'eval-source-map',
+  output: {    
+    filename: '[name].js'
+  },
   entry: [
     'react-hot-loader/patch',
     'webpack-hot-middleware/client'
@@ -28,6 +31,9 @@ const config: webpack.Configuration = {
         use: ['style-loader', 'css-loader']
       }
     ]
+  },
+  stats: {
+    chunks: false
   }
 };
 

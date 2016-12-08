@@ -10,8 +10,7 @@ const config: Configuration = {
     './main.tsx'
   ],
   output: {
-    filename: '[name].js',
-    path: path.resolve('./dist'),
+    path: path.resolve(__dirname, '../build'),
     publicPath: '/'
   },
   plugins: [
