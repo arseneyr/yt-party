@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
+import * as LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
 import { Configuration } from 'webpack';
 
 const srcPath = path.resolve(__dirname, '../src');
@@ -22,18 +23,26 @@ const config: Configuration = {
     extensions: [
       '.js',
       '.ts',
-      '.tsx'
+      '.tsx',
+      '.scss',
+      '.css'
     ]
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: 'babel-loader',
-        include: srcPath,
-        options: {
-          presets: [[ 'es2015', { modules: false } ], 'react']
-        }
+        test: /\.(scss|css)$/,
+        include: path.resolve(__dirname, '../node_modules/react-toolbox'),
+        use: [
+          'style-loader',
+          'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+          'sass-loader?sourceMap'
+        ]
+      },
+      {
+        test: /\.css$/,
+        include: [srcPath, path.resolve(__dirname, '../styles')],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.tsx?$/,

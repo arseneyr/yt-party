@@ -1,22 +1,20 @@
 import React, { PropTypes } from 'react';
-import {
-  Card as OldCard,
-  CardMedia,
-  CardTitle,
-  FloatingActionButton,
-  List,
-  ListItem,
-  Subheader,
-  IconButton
-} from 'material-ui';
-import AddIcon from 'material-ui/svg-icons/content/add';
-import EditIcon from 'material-ui/svg-icons/editor/mode-edit';
-
+import { Card, CardMedia } from 'react-toolbox/lib/card';
+import { Button } from 'react-toolbox/lib/button';
 import { Link } from 'react-router';
 
-const Card:any = OldCard;
+const Home = () => (
+  <Card
+    raised
+  >
+    <CardMedia
+      image='http://img.youtube.com/vi/u-2ckLBV21g/maxresdefault.jpg'
+      aspectRatio='wide'
+    />
+  </Card>
+)
 
-const Home: MaterialUiComponent = ({}, context) => (
+/*const Home2: MaterialUiComponent = ({}, context) => (
   <div>
     <Card zDepth={1} style={{ position: 'relative' }}>
       <CardMedia
@@ -55,6 +53,6 @@ const Home: MaterialUiComponent = ({}, context) => (
 
 Home.contextTypes = {
   muiTheme: PropTypes.object.isRequired
-}
+}*/
 
 export default Home;

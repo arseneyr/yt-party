@@ -5,7 +5,7 @@ import base from './webpack.config.base';
 
 const config: webpack.Configuration = {
   devtool: 'eval-source-map',
-  output: {    
+  output: {
     filename: '[name].js'
   },
   entry: [
@@ -14,9 +14,6 @@ const config: webpack.Configuration = {
   ],
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new LoaderOptionsPlugin({
-      debug: true
-    }),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
@@ -24,14 +21,6 @@ const config: webpack.Configuration = {
       DEVELOPMENT: true
     })
   ],
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      }
-    ]
-  },
   stats: {
     chunks: false
   }
