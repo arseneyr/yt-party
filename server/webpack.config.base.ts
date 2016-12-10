@@ -26,7 +26,6 @@ const config: Configuration = {
     ]
   },
   module: {
-    noParse: /\.min\.js/,
     rules: [
       {
         test: /\.js$/,

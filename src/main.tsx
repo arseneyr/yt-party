@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import appReducer from './reducer';
 
@@ -33,10 +34,8 @@ if (module.hot) {
     store.replaceReducer(nextReducer);
   });
 
-  module.hot.accept('./app', () => {
-    const NextApp = require('./app').default;
-    renderApp(NextApp);
-  })
+  module.hot.accept('./app', () => renderApp());
 }
 
+injectTapEventPlugin();
 renderApp();

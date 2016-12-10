@@ -1,3 +1,5 @@
+/// <reference types="material-ui" />
+
 interface DevTools {
   (): any;
   open: () => any;
@@ -35,3 +37,12 @@ declare module 'react-router-addons-controlled/ControlledBrowserRouter' {
 }
 
 declare const DEVELOPMENT: boolean;
+
+interface MaterialUiComponent {
+  (props: any, context: {muiTheme: __MaterialUI.Styles.MuiTheme}): JSX.Element,
+  contextTypes?: React.ValidationMap<any>
+}
+
+declare module 'material-ui' {
+  //export class Card extends React.Component<__MaterialUI.Card.CardProps & {zDepth?: number}, {}> {}
+}
