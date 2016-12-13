@@ -17,9 +17,12 @@ const isProd = process.env.NODE_ENV === 'production';
 const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
-app.use('/graphiql', graphiqlExpress({
-  endpointURL: '/graphql'
-}));
+if (!isProd) {
+  app.use('/graphiql', graphiqlExpress({
+    endpointURL: '/graphql'
+  }));
+}
+
 app.use('/graphql', bodyParser.json(), graphql);
 app.use(historyMiddleware());
 
