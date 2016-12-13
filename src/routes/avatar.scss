@@ -2,10 +2,15 @@
   border-radius: 0;
 }
 
-.darkOverlay.cardMedia {
-  .darkOverlay.cardTitle {
-    background-color: rgba(0,0,0,0.7);
+.floatingAddButtonContainer {
+  .button {
+    position: absolute;
+    right: 30px;
+    bottom: -28px;
+    z-index: 5;
   }
+
+  position: relative;
 }
 
 [data-react-toolbox='list-item-text'] {

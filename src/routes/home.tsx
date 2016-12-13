@@ -1,75 +1,70 @@
 import React, { PropTypes } from 'react';
 import { Card, CardMedia, CardTitle } from 'react-toolbox/lib/card';
-import { List, ListItem, ListSubHeader, ListItemProps } from 'react-toolbox/lib/list';
+import { List, ListItem, ListSubHeader } from 'react-toolbox/lib/list';
 import { Avatar } from 'react-toolbox/lib/avatar';
 import { Button } from 'react-toolbox/lib/button';
 import { Link } from 'react-router';
 
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
+
 import theme from './avatar.scss';
 
-const Home = () => (
+const Home= ({ data }: any) => (
   <div>
-  <Card raised>
-    <CardMedia
-      aspectRatio='wide'
-      image='http://img.youtube.com/vi/SXiSVQZLje8/maxresdefault.jpg'
-      contentOverlay
-      className={theme.darkOverlay}
-      theme={theme}
-    >
-      <CardTitle title='SUP'
-      className={theme.darkOverlay} theme={theme} subtitle="oh yes"/>
-    </CardMedia>
-  </Card>
-  <Button icon='add' floating accent/>
+  {
+    !data.loading && data.nowPlaying
+      ? [<Card raised key='sure'>
+        <CardMedia
+          aspectRatio='wide'
+          image={data.nowPlaying.thumbnailUrl}
+        />
+        <CardTitle
+          title={data.nowPlaying.title}
+          subtitle={['Queued by ', <b key='yup'>{data.nowPlaying.queuedBy}</b>]}
+        />
+      </Card>,
+      <div key='butts' className={theme.floatingAddButtonContainer} >
+        <Button icon='add' theme={theme} floating accent/>
+      </div>]
+    : undefined
+  }
   <List>
     <ListSubHeader caption='Up Next' />
-    <ListItem caption="YPYPYP" legend={['Queued by: ',<b>sup</b>] as any} leftActions={[<Avatar cover theme={theme} image='http://img.youtube.com/vi/SXiSVQZLje8/maxresdefault.jpg' />]} />
-    <ListItem theme={theme} caption="YPYPYPddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" />
-    <ListItem caption="YPYPYP" />
+    {
+      !data.loading && data.queue.length > 0 ?
+        data.queue.map((v: any) => (
+          <ListItem
+            ripple={false}
+            key={v.id}
+            caption={v.title}
+            legend={v.queuedBy ? ['Queued by ', <b key={v.id}>{v.queuedBy}</b>] : undefined as any}
+            leftActions={[ <Avatar
+              key={v.id}
+              cover
+              theme={theme}
+              image={v.thumbnailUrl}
+            />]} />
+        )) : []
+    }
   </List>
   </div>
 )
 
-/*const Home2: MaterialUiComponent = ({}, context) => (
-  <div>
-    <Card zDepth={1} style={{ position: 'relative' }}>
-      <CardMedia
-        overlay={<CardTitle title='Overlay title' subtitle='Overlay subtitle' />}
-        >
-        <img src='http://img.youtube.com/vi/u-2ckLBV21g/maxresdefault.jpg' />
-      </CardMedia>
-      <FloatingActionButton
-        containerElement={<Link to='/search' />}
-        style={{
-          position: 'absolute',
-          bottom: context.muiTheme.floatingActionButton
-            ? -(context.muiTheme.floatingActionButton.buttonSize / 2)
-            : undefined,
-          right: '30px' }}
-        >
-        <AddIcon />
-      </FloatingActionButton>
-    </Card>
-    <List>
-      <Subheader>
-        Up Next
-        <IconButton style={{ transform: 'translate(0px, 4px)' }}><EditIcon /></IconButton>
-      </Subheader>
-      <ListItem
-          disabled
-        primaryText={<div style={{
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' }}>dfdf</div>}
-        secondaryText={["Queued by ", <b>yoooo</b>]}
-      />
-    </List>
-    </div>
-);
+export default graphql(gql`
+  query Test {
+    queue {
+      id
+      thumbnailUrl
+      title
+      queuedBy
+    }
+    nowPlaying {
+      id
+      thumbnailUrl
+      title
+      queuedBy
+    }
+  }
+`)(Home);
 
-Home.contextTypes = {
-  muiTheme: PropTypes.object.isRequired
-}*/
-
-export default Home;

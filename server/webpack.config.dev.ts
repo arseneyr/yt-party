@@ -6,7 +6,8 @@ import base from './webpack.config.base';
 const config: webpack.Configuration = {
   devtool: 'eval-source-map',
   output: {
-    filename: '[name].js'
+    filename: '[name].js',
+    publicPath: '/'
   },
   entry: [
     'react-hot-loader/patch',
@@ -23,6 +24,19 @@ const config: webpack.Configuration = {
   ],
   stats: {
     chunks: false
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(scss|css)$/,
+        use: [
+          'style-loader',
+          'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+          'postcss-loader',
+          'sass-loader?sourceMap'
+        ]
+      }
+    ]
   }
 };
 

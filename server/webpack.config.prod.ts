@@ -8,7 +8,8 @@ const config: webpack.Configuration = {
   devtool: 'source-map',
   output: {
     filename: '[name].[chunkhash].js',
-    sourceMapFilename: '../sourceMaps/[name].[chunkhash].map'
+    sourceMapFilename: '../sourceMaps/[name].[chunkhash].map',
+    publicPath: '/static/'
   },
   plugins: [
     new LoaderOptionsPlugin({
@@ -45,12 +46,16 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.s?css$/,
         // Use `loader` instead of `use` due to
         // https://github.com/webpack/extract-text-webpack-plugin/issues/265
         loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
-          loader: 'css-loader'
+          loader: [
+            'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+            'postcss-loader',
+            'sass-loader?sourceMap'
+          ]
         })
       }
     ]

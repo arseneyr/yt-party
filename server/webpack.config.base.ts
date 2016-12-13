@@ -12,8 +12,7 @@ const config: Configuration = {
     './main.tsx'
   ],
   output: {
-    path: path.resolve(__dirname, '../build'),
-    publicPath: '/'
+    path: path.resolve(__dirname, '../build')
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -32,6 +31,7 @@ const config: Configuration = {
   resolve: {
     extensions: [
       '.js',
+      '.jsx',
       '.ts',
       '.tsx',
       '.scss',
@@ -40,21 +40,6 @@ const config: Configuration = {
   },
   module: {
     rules: [
-      {
-        test: /\.(scss|css)$/,
-        //include: path.resolve(__dirname, '../node_modules/react-toolbox'),
-        use: [
-          'style-loader',
-          'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-          'postcss-loader',
-          'sass-loader?sourceMap'
-        ]
-      },
-      /*{
-        test: /\.css$/,
-        include: [srcPath, path.resolve(__dirname, '../styles')],
-        use: ['style-loader', 'css-loader']
-      },*/
       {
         test: /\.tsx?$/,
         use: [
@@ -66,6 +51,18 @@ const config: Configuration = {
           },
           {
             loader: 'ts-loader'
+          }
+        ]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: path.resolve(__dirname, '../node_modules'),
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [[ 'es2015', { modules: false } ], 'react']
+            }
           }
         ]
       }

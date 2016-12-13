@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { createStore } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose, Reducer } from 'redux';
 import { Provider } from 'react-redux';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+
+import ApolloClient from 'apollo-client';
+import { ApolloProvider } from 'react-apollo';
+
+const client = new ApolloClient();
 
 import appReducer from './reducer';
 
@@ -14,21 +18,40 @@ if (devTools) {
   devTools.open();
 }
 
-const store = createStore(appReducer, devTools && devTools());
+const store = createStore(combineReducers({
+  ...appReducer,
+  apollo: client.reducer() as <S>() => Reducer<S>
+}), compose(
+  applyMiddleware(client.middleware()),
+  devTools ? devTools() : (f: any) => f
+));
 
 const rootEl = document.getElementById('root');
 const renderApp = (Component = App) => {
-  ReactDOM.render(
-    <AppContainer>
+  if (DEVELOPMENT) {
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={store}>
+          <ApolloProvider store={store} client={client}>
+            <Component />
+          </ApolloProvider>
+        </Provider>
+      </AppContainer>,
+      rootEl
+    );
+  } else {
+    ReactDOM.render(
       <Provider store={store}>
-        <Component />
-      </Provider>
-    </AppContainer>,
-    rootEl
-  );
+        <ApolloProvider store={store} client={client}>
+          <Component />
+        </ApolloProvider>
+      </Provider>,
+      rootEl
+    );
+  }
 };
 
-if (module.hot) {
+if (DEVELOPMENT && module.hot) {
   module.hot.accept('./reducer', () => {
     const nextReducer = require('./reducer').default;
     store.replaceReducer(nextReducer);

@@ -17,6 +17,8 @@ const isProd = process.env.NODE_ENV === 'production';
 const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
+app.use(compression());
+
 if (!isProd) {
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql'
@@ -36,7 +38,13 @@ if (!isProd) {
       colors: true
     }
   }));
+
+  app.listen(3000);
+
 } else {
+  app.use('/static', express.static(path.resolve(__dirname, '../build'), {maxAge: '1y'}));
+  app.use('/', express.static(path.resolve(__dirname, '../build')));
+
   compiler.run((err,stats) => {
     if (err) {
       console.error(err);
@@ -48,11 +56,6 @@ if (!isProd) {
       chunks: false
     }));
 
-    app.use(compression());
-    app.use(express.static(path.resolve(__dirname, '../build'), {
-      maxAge: '1y'
-    }));
+    app.listen(80);
   })
 }
-
-app.listen(3000);
