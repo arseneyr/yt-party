@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
+import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
 import { Configuration } from 'webpack';
 
 const srcPath = path.resolve(__dirname, '../src');
@@ -17,6 +18,15 @@ const config: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(srcPath, './index.html')
+    }),
+    new LoaderOptionsPlugin({
+      options: {
+        postcss: [
+          require('postcss-cssnext')
+        ],
+        resolve: {},
+        context: '/'
+      }
     })
   ],
   resolve: {
@@ -32,18 +42,19 @@ const config: Configuration = {
     rules: [
       {
         test: /\.(scss|css)$/,
-        include: path.resolve(__dirname, '../node_modules/react-toolbox'),
+        //include: path.resolve(__dirname, '../node_modules/react-toolbox'),
         use: [
           'style-loader',
           'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+          'postcss-loader',
           'sass-loader?sourceMap'
         ]
       },
-      {
+      /*{
         test: /\.css$/,
         include: [srcPath, path.resolve(__dirname, '../styles')],
         use: ['style-loader', 'css-loader']
-      },
+      },*/
       {
         test: /\.tsx?$/,
         use: [

@@ -1,8 +1,8 @@
 import React from 'react';
-import './MainContainer.css';
+import theme from './MainContainer.css';
 
 const MainContainer = (props: React.HTMLProps<HTMLDivElement>) => (
-  <div className='container'>
+  <div className={theme.container}>
     { props.children }
   </div>
 );

@@ -1,17 +1,34 @@
 import React, { PropTypes } from 'react';
-import { Card, CardMedia } from 'react-toolbox/lib/card';
+import { Card, CardMedia, CardTitle } from 'react-toolbox/lib/card';
+import { List, ListItem, ListSubHeader, ListItemProps } from 'react-toolbox/lib/list';
+import { Avatar } from 'react-toolbox/lib/avatar';
 import { Button } from 'react-toolbox/lib/button';
 import { Link } from 'react-router';
 
+import theme from './avatar.scss';
+
 const Home = () => (
-  <Card
-    raised
-  >
+  <div>
+  <Card raised>
     <CardMedia
-      image='http://img.youtube.com/vi/u-2ckLBV21g/maxresdefault.jpg'
       aspectRatio='wide'
-    />
+      image='http://img.youtube.com/vi/SXiSVQZLje8/maxresdefault.jpg'
+      contentOverlay
+      className={theme.darkOverlay}
+      theme={theme}
+    >
+      <CardTitle title='SUP'
+      className={theme.darkOverlay} theme={theme} subtitle="oh yes"/>
+    </CardMedia>
   </Card>
+  <Button icon='add' floating accent/>
+  <List>
+    <ListSubHeader caption='Up Next' />
+    <ListItem caption="YPYPYP" legend={['Queued by: ',<b>sup</b>] as any} leftActions={[<Avatar cover theme={theme} image='http://img.youtube.com/vi/SXiSVQZLje8/maxresdefault.jpg' />]} />
+    <ListItem theme={theme} caption="YPYPYPddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" />
+    <ListItem caption="YPYPYP" />
+  </List>
+  </div>
 )
 
 /*const Home2: MaterialUiComponent = ({}, context) => (

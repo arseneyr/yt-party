@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Match } from 'react-router';
 import Router from 'react-router-addons-controlled/ControlledBrowserRouter';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MainContainer from './container/MainContainer';
 
 import actions from './actions';
@@ -10,7 +9,8 @@ import actions from './actions';
 import Home from './routes/home';
 import Counter from './routes/counter';
 
-import '../styles/main.css';
+import rootStyles from './styles/main.css'
+import 'react-toolbox/lib/commons.css';
 
 const App = ({ router, setLocation }: any) => (
   <Router
@@ -22,12 +22,10 @@ const App = ({ router, setLocation }: any) => (
       setLocation(routerState, action === 'SYNC' ? router.action : action);
     }}
   >
-    <MuiThemeProvider>
       <MainContainer>
         <Match exactly pattern="/" component={Home} />
         <Match exactly pattern="/counter" component={Counter} />
       </MainContainer>
-    </MuiThemeProvider>
   </Router>
 );
 

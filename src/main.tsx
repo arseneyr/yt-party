@@ -37,5 +37,4 @@ if (module.hot) {
   module.hot.accept('./app', () => renderApp());
 }
 
-injectTapEventPlugin();
 renderApp();

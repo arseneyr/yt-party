@@ -20,6 +20,11 @@ declare module '*.css' {
   export default content;
 }
 
+declare module '*.scss' {
+  const content: any;
+  export default content;
+}
+
 interface NodeModule {
   hot: {
     accept: (path: string | string[], callback: () => void ) => void

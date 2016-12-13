@@ -1,0 +1,19 @@
+.avatar, .avatar > .image {
+  border-radius: 0;
+}
+
+.darkOverlay.cardMedia {
+  .darkOverlay.cardTitle {
+    background-color: rgba(0,0,0,0.7);
+  }
+}
+
+[data-react-toolbox='list-item-text'] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-react-toolbox='list'] span {
+  min-width: 0;
+}
