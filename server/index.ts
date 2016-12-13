@@ -5,6 +5,9 @@ import * as devMiddleware from 'webpack-dev-middleware';
 import * as hotMiddleware from 'webpack-hot-middleware';
 import * as compression from 'compression';
 import * as path from 'path';
+import * as bodyParser from 'body-parser';
+import { graphiqlExpress } from 'graphql-server-express';
+import graphql from './graphql';
 
 import * as webpack from 'webpack';
 import devConfig from './webpack.config.dev';
@@ -14,6 +17,10 @@ const isProd = process.env.NODE_ENV === 'production';
 const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
+app.use('/graphiql', graphiqlExpress({
+  endpointURL: '/graphql'
+}));
+app.use('/graphql', bodyParser.json(), graphql);
 app.use(historyMiddleware());
 
 if (!isProd) {
@@ -33,9 +40,9 @@ if (!isProd) {
       process.exit(1);
     }
 
-    console.log(stats.toString({ 
-      colors: true, 
-      chunks: false 
+    console.log(stats.toString({
+      colors: true,
+      chunks: false
     }));
 
     app.use(compression());
