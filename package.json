@@ -7,6 +7,7 @@
   "main": "index.js",
   "dependencies": {
     "apollo-client": "^0.5.19",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "express": "^4.14.0",
@@ -29,6 +30,7 @@
     "ts-node": "^1.7.0"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.0.36",
     "@types/body-parser": "0.0.33",
     "@types/chance": "^0.7.31",
     "@types/compression": "0.0.33",
@@ -64,7 +66,6 @@
     "postcss-cssnext": "^2.9.0",
     "postcss-loader": "^1.2.1",
     "rimraf": "^2.5.4",
-    "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "ts-loader": "^1.2.2",
     "typescript": "^2.2.0-dev.20161201",

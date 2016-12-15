@@ -4,13 +4,14 @@ import { AppContainer } from 'react-hot-loader';
 import { createStore, combineReducers, applyMiddleware, compose, Reducer } from 'redux';
 import { Provider } from 'react-redux';
 
+import 'normalize.css/normalize.css';
+
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient();
 
 import appReducer from './reducer';
-
 import App from './app';
 
 const devTools = DEVELOPMENT ? window.__REDUX_DEVTOOLS_EXTENSION__ : undefined;

@@ -28,12 +28,11 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
+        test: /\.css$/,
         use: [
           'style-loader',
           'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
           'postcss-loader',
-          'sass-loader?sourceMap'
         ]
       }
     ]

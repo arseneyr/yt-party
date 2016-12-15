@@ -9,8 +9,8 @@ import actions from './actions';
 import Home from './routes/home';
 import Counter from './routes/counter';
 
-import rootStyles from './styles/main.css'
 import 'react-toolbox/lib/commons.css';
+import './styles/main.css';
 
 const App = ({ router, setLocation }: any) => (
   <Router

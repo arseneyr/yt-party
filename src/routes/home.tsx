@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
-import theme from './avatar.scss';
+import theme from './avatar.css';
 
 const Home= ({ data }: any) => (
   <div>
