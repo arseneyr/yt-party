@@ -24,8 +24,12 @@ const Home= ({ data }: any) => (
           subtitle={['Queued by ', <b key='yup'>{data.nowPlaying.queuedBy}</b>]}
         />
       </Card>,
-      <div key='butts' className={theme.floatingAddButtonContainer} >
-        <Button icon='add' theme={theme} floating accent/>
+      <div className={theme.floatingAddButtonContainer} >
+        <Link to='/search'>{
+          ({onClick}: any) =>
+            <Button icon='add' onClick={onClick} theme={theme} floating accent/>
+        }
+        </Link>
       </div>]
     : undefined
   }
@@ -51,7 +55,7 @@ const Home= ({ data }: any) => (
   </div>
 )
 
-export default graphql(gql`
+export const queueQuery = gql`
   query Test {
     queue {
       id
@@ -66,5 +70,7 @@ export default graphql(gql`
       queuedBy
     }
   }
-`)(Home);
+`;
+
+export default graphql(queueQuery)(Home);
 

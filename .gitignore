@@ -9,3 +9,6 @@ node_modules
 # Built sources
 build
 sourceMaps
+
+# Secrets
+config.ts

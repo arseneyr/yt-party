@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action, combineReducers } from 'redux';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const history = createBrowserHistory();
@@ -31,7 +31,15 @@ const routerStore = (state = routerDefaultState, action: Action) => {
   }
 };
 
-export default {
-  counter: counterStore,
+let reducers = {
   router: routerStore
 };
+
+export function injectReducer(reducer: any) {
+  reducers = {
+    ...reducers,
+    ...reducer
+  }
+}
+
+export const getReducer = () => combineReducers(reducers);

@@ -1,3 +1,5 @@
+//import { Config } from '../../config';
+
 interface DevTools {
   (): any;
   open: () => any;
@@ -35,3 +37,4 @@ declare module 'react-router-addons-controlled/ControlledBrowserRouter' {
 }
 
 declare const DEVELOPMENT: boolean;
+declare const APP_CONFIG: any;

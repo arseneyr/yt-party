@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Match } from 'react-router';
 import Router from 'react-router-addons-controlled/ControlledBrowserRouter';
-import MainContainer from './container/MainContainer';
+import MainContainer from './components/MainContainer';
 
 import actions from './actions';
 
 import Home from './routes/home';
-import Counter from './routes/counter';
+import Search from './routes/search';
 
 import 'react-toolbox/lib/commons.css';
 import './styles/main.css';
@@ -24,7 +24,7 @@ const App = ({ router, setLocation }: any) => (
   >
       <MainContainer>
         <Match exactly pattern="/" component={Home} />
-        <Match exactly pattern="/counter" component={Counter} />
+        <Match exactly pattern="/search" component={Search} />
       </MainContainer>
   </Router>
 );

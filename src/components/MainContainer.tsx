@@ -1,6 +1,8 @@
 import React from 'react';
+import { graphql } from 'react-apollo';
 import theme from './MainContainer.css';
-import NameDialog from '../components/NameDialog';
+import NameDialog from './NameDialog';
+import { queueQuery } from '../routes/home';
 
 const MainContainer = (props: React.HTMLProps<HTMLDivElement>) => (
   <div className={theme.container}>
@@ -9,4 +11,4 @@ const MainContainer = (props: React.HTMLProps<HTMLDivElement>) => (
   </div>
 );
 
-export default MainContainer;
+export default graphql(queueQuery)(MainContainer);

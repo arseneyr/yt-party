@@ -1,0 +1,22 @@
+.inputHint  {
+  color: rgba(255,255,255,0.7);
+  margin-top: -0.3rem;
+}
+
+.leftIcon {
+  margin-left: -2rem;
+  margin-right: 0.8rem;
+}
+
+.autocomplete,
+.appBar form {
+  width: 100%;
+}
+
+.inputInputElement {
+  color: white;
+}
+
+.suggestion {
+  color: black;
+}

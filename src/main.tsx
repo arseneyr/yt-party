@@ -11,7 +11,7 @@ import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient();
 
-import appReducer from './reducer';
+import { getReducer, injectReducer } from './reducer';
 import App from './app';
 
 const devTools = DEVELOPMENT ? window.__REDUX_DEVTOOLS_EXTENSION__ : undefined;
@@ -19,10 +19,9 @@ if (devTools) {
   devTools.open();
 }
 
-const store = createStore(combineReducers({
-  ...appReducer,
-  apollo: client.reducer() as <S>() => Reducer<S>
-}), compose(
+injectReducer({ apollo: client.reducer() });
+
+const store = createStore(getReducer(), compose(
   applyMiddleware(client.middleware()),
   devTools ? devTools() : (f: any) => f
 ));
@@ -53,11 +52,7 @@ const renderApp = (Component = App) => {
 };
 
 if (DEVELOPMENT && module.hot) {
-  module.hot.accept('./reducer', () => {
-    const nextReducer = require('./reducer').default;
-    store.replaceReducer(nextReducer);
-  });
-
+  store.replaceReducer(getReducer());
   module.hot.accept('./app', () => renderApp());
 }
 

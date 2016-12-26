@@ -17,7 +17,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
-app.use(compression());
+//app.use(compression());
 
 if (!isProd) {
   app.use('/graphiql', graphiqlExpress({
