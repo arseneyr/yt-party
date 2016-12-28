@@ -1,14 +1,26 @@
 import { graphqlExpress } from 'graphql-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { PubSub, SubscriptionManager } from 'graphql-subscriptions';
 import * as Chance from 'chance';
 import * as Promise from 'bluebird';
+import { createServer } from 'http';
 
 const chance = new Chance();
 const mockData: {videos: {id: string}[]} = require('../testdata.json');
 let currentUser: string = null;
 let wrongTries = 1;
 
-export default graphqlExpress({ schema: makeExecutableSchema({
+const websocketServer = createServer((req,res) => {
+  res.writeHead(404);
+  res.end();
+});
+
+websocketServer.listen(8080);
+
+const getVideos = () => mockData.videos.map(v => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/default.jpg`}));
+
+const schema = makeExecutableSchema({
   typeDefs: `
     type Video {
       id: String!
@@ -47,14 +59,19 @@ export default graphqlExpress({ schema: makeExecutableSchema({
       queueVideo(id: String!): QueueVideoResult
     }
 
+    type Subscription {
+      queueChanged: [Video]
+    }
+
     schema {
       query: Query
       mutation: Mutation
+      subscription: Subscription
     }
   `,
   resolvers: {
     Query: {
-      queue: () => mockData.videos.map(v => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/default.jpg`})),
+      queue: getVideos,
       nowPlaying: () => ({...mockData.videos[0], title: chance.sentence({words: 10}), thumbnailUrl: `http://img.youtube.com/vi/${mockData.videos[0].id}/maxresdefault.jpg`, queuedBy: chance.name()}),
       currentUser: () => ({ admin: false, name: currentUser })
     },
@@ -74,11 +91,32 @@ export default graphqlExpress({ schema: makeExecutableSchema({
       }),
       queueVideo: (_, {id}) => {
         mockData.videos.push({id});
+        pubsub.publish('queueChanged', getVideos());
         return {
           error: null
         }
       }
+    },
+
+    Subscription: {
+      queueChanged: () => getVideos()
     }
   }
-})
-})
+});
+
+const pubsub = new PubSub();
+const subscriptionManager = new SubscriptionManager({
+  schema,
+  setupFunctions: {
+    queueChanged: () => ({
+      queueChanged: () => true
+    })
+  },
+  pubsub
+});
+
+new SubscriptionServer({
+  subscriptionManager
+}, websocketServer);
+
+export default graphqlExpress({ schema });

@@ -2,6 +2,10 @@
   border-radius: 0;
 }
 
+.avatar {
+  width: 7rem;
+}
+
 .floatingAddButtonContainer {
   & .button {
     position: absolute;

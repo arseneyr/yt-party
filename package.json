@@ -13,6 +13,7 @@
     "express": "^4.14.0",
     "graphql": "^0.7.2",
     "graphql-server-express": "^0.4.3",
+    "graphql-subscriptions": "^0.2.2",
     "graphql-tag": "^1.1.2",
     "graphql-tools": "^0.8.3",
     "history": "^4.4.0",
@@ -31,6 +32,7 @@
     "redux-actions": "^1.2.0",
     "redux-observable": "^0.12.2",
     "rxjs": "^5.0.2",
+    "subscriptions-transport-ws": "^0.3.1",
     "ts-node": "^1.7.0",
     "xhr": "^2.3.2"
   },
@@ -69,6 +71,7 @@
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "html-webpack-plugin": "^2.24.1",
     "immutability-helper": "^2.0.0",
+    "json-loader": "^0.5.4",
     "node-sass": "^3.13.1",
     "postcss-cssnext": "^2.9.0",
     "postcss-loader": "^1.2.1",

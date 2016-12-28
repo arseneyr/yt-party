@@ -34,8 +34,8 @@ const config: Configuration = {
       '.jsx',
       '.ts',
       '.tsx',
-      '.scss',
-      '.css'
+      '.css',
+      '.json'
     ]
   },
   module: {
@@ -65,6 +65,10 @@ const config: Configuration = {
             }
           }
         ]
+      },
+      {
+        test: /\.json$/,
+        use: 'json-loader'
       }
     ]
   }

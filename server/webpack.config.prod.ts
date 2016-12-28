@@ -3,6 +3,7 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
 import * as LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
 import * as merge from 'webpack-merge';
 import base from './webpack.config.base';
+import APP_CONFIG from '../config';
 
 const config: webpack.Configuration = {
   devtool: 'source-map',
@@ -39,7 +40,8 @@ const config: webpack.Configuration = {
       "process.env": {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       },
-      DEVELOPMENT: false
+      DEVELOPMENT: false,
+      APP_CONFIG: JSON.stringify(APP_CONFIG)
     }),
     new ExtractTextPlugin('styles.[contenthash].css')
   ],

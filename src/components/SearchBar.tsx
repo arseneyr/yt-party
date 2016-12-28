@@ -47,6 +47,7 @@ export default class SearchBar extends React.Component<SearchBarProps, SearchBar
   render() {
    return (
     <AppBar theme={theme}
+      fixed
       leftIcon='arrow_back'
       onLeftIconClick={() => window.history.back()}
       rightIcon={this.state.searchText && 'close'}

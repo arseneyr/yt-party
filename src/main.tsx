@@ -6,10 +6,19 @@ import { Provider } from 'react-redux';
 
 import 'normalize.css/normalize.css';
 
-import ApolloClient from 'apollo-client';
+import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
+import { Client } from 'subscriptions-transport-ws';
+import addGraphQLSubscriptions from './helper';
 
-const client = new ApolloClient();
+const client = new ApolloClient({
+  networkInterface: addGraphQLSubscriptions(createNetworkInterface({
+    uri: '/graphql',
+    opts: {
+      credentials: 'same-origin'
+    }
+  }), new Client(`ws://${window.location.hostname}:8080`))
+});
 
 import { getReducer, injectReducer, getEpicMiddleware } from './reducer';
 import App from './app';
