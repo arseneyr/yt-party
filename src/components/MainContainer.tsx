@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import theme from './MainContainer.css';
 import NameDialog from './NameDialog';
-import { queueQuery } from '../routes/home';
+import { query } from '../container/Queue';
 
 const MainContainer = (props: React.HTMLProps<HTMLDivElement>) => (
   <div className={theme.container}>
@@ -11,4 +11,4 @@ const MainContainer = (props: React.HTMLProps<HTMLDivElement>) => (
   </div>
 );
 
-export default graphql(queueQuery)(MainContainer);
+export default graphql(query)(MainContainer);
