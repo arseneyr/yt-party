@@ -18,7 +18,7 @@ const websocketServer = createServer((req,res) => {
 
 websocketServer.listen(8080);
 
-const getVideos = () => mockData.videos.map(v => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/default.jpg`}));
+const getVideos = () => mockData.videos.map((v,i) => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/${i==0 ? 'maxresdefault' : 'default'}.jpg`}));
 
 const schema = makeExecutableSchema({
   typeDefs: `
@@ -36,7 +36,6 @@ const schema = makeExecutableSchema({
 
     type Query {
       currentUser: CurrentUser!
-      nowPlaying: Video
       queue: [Video]!
       video(id: String!) : Video
     }
@@ -72,7 +71,6 @@ const schema = makeExecutableSchema({
   resolvers: {
     Query: {
       queue: getVideos,
-      nowPlaying: () => ({...mockData.videos[0], title: chance.sentence({words: 10}), thumbnailUrl: `http://img.youtube.com/vi/${mockData.videos[0].id}/maxresdefault.jpg`, queuedBy: chance.name()}),
       currentUser: () => ({ admin: false, name: currentUser })
     },
 

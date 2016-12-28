@@ -12,10 +12,11 @@ interface SearchResultsProps {
     thumbnailUrl: string,
     title: string,
     duration: number,
-    views: number
+    views: number,
+    selected: boolean
   }[],
   loading: boolean,
-  addToQueue: (id: string) => void
+  addToQueue: (video: any) => void
 };
 
 function toHHMMSS (sec_num: number) {
@@ -39,9 +40,11 @@ const SearchResults = ({ results, loading, addToQueue }: SearchResultsProps) => 
             theme={theme}
             key={v.id}
             caption={v.title}
-            selectable
+            selectable={!v.selected}
+            ripple={!v.selected}
             legend={`${toHHMMSS(v.duration)} - ${numeral(v.views).format('0a')} Views`}
-            onClick={() => addToQueue(v.id)}
+            onClick={() => !v.selected && addToQueue(v)}
+            rightIcon={v.selected && 'check_circle'}
             leftActions={[ <img
                 key={v.id}
                 src={v.thumbnailUrl}

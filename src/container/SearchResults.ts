@@ -1,5 +1,6 @@
 import { injectReducer, injectEpic } from '../reducer';
 import { createAction, handleActions, Action, Reducer } from 'redux-actions';
+import { withQueue } from './Queue';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -139,13 +140,33 @@ const mutation = gql`
 `
 const withMutation = graphql(mutation, {
   props: ({ mutate }) => ({
-    addToQueue: (id) => mutate({variables: {id}})
+    addToQueue: ({id, title, thumbnailUrl}) => mutate({
+      variables: {id},
+      optimisticResponse: {
+        __typename: 'Mutation',
+        queueVideo: {
+          __typename: 'QueueVideoResult',
+          error: null
+        }
+      },
+      updateQueries: {
+        Queue: (prev, { mutationResult }) => (
+          prev.queue.find(v => v.id === id)
+          ? prev
+          : {...prev, queue: prev.queue.concat({__typename: 'Video', id, thumbnailUrl, title, queuedBy:'Me'})})
+      }
+    })
   })
 });
 
 export const SearchResults = compose(
   withMutation,
-  connect((state: any) => state.search),
+  withQueue,
+  connect((state: any, ownProps: any) => ({
+    ...ownProps,
+    ...state.search,
+    results: state.search.results.map((r,i) => ({...r, selected: !!ownProps.queue.find(q => q.id === r.id)}))
+  })),
 )(SearchResultsComponent);
 
 export const SearchBar = (connect as any)(undefined, {onSubmit: actions.startSearch})(SearchBarComponent);

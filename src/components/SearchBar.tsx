@@ -4,6 +4,7 @@ import { Autocomplete as OldAutocomplete } from 'react-toolbox/lib/autocomplete'
 import { connect } from 'react-redux';
 import actions from '../actions';
 import theme from './SearchBar.css';
+import container from './MainContainer.css';
 
 const Autocomplete: any = OldAutocomplete;
 
@@ -47,7 +48,7 @@ export default class SearchBar extends React.Component<SearchBarProps, SearchBar
   render() {
    return (
     <AppBar theme={theme}
-      fixed
+      className={container.container}
       leftIcon='arrow_back'
       onLeftIconClick={() => window.history.back()}
       rightIcon={this.state.searchText && 'close'}

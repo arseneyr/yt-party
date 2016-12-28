@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import theme from './MainContainer.css';
 import NameDialog from './NameDialog';
-import { query } from '../container/Queue';
+import { withQueue } from '../container/Queue';
 
 const subscription = gql`
   subscription QueueChanged {
@@ -44,11 +44,4 @@ class MainContainer extends React.Component<any,any> {
   }
 }
 
-const MainContainer1 = (props: React.HTMLProps<HTMLDivElement>) => (
-  <div className={theme.container}>
-    <NameDialog />
-    { props.children }
-  </div>
-);
-
-export default graphql(query)(MainContainer);
+export default withQueue(MainContainer);

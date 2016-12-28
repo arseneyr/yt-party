@@ -7,18 +7,18 @@ import { Link } from 'react-router';
 
 import theme from './Queue.css';
 
-const Queue = ({ data }: any) => (
+const Queue = ({ loading, queue }: any) => (
   <div>
   {
-    !data.loading && data.nowPlaying
+    !loading && queue.length > 0
       ? [<Card raised key='sure'>
         <CardMedia
           aspectRatio='wide'
-          image={data.nowPlaying.thumbnailUrl}
+          image={queue[0].thumbnailUrl}
         />
         <CardTitle
-          title={data.nowPlaying.title}
-          subtitle={['Queued by ', <b key='yup'>{data.nowPlaying.queuedBy}</b>]}
+          title={queue[0].title}
+          subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy}</b>]}
         />
       </Card>,
       <div className={theme.floatingAddButtonContainer} >
@@ -33,8 +33,8 @@ const Queue = ({ data }: any) => (
   <List theme={theme}>
     <ListSubHeader caption='Up Next' />
     {
-      !data.loading && data.queue.length > 0 ?
-        data.queue.map((v: any) => (
+      !loading && queue.length > 1 ?
+        queue.slice(1).map((v: any) => (
           <ListItem
             ripple={false}
             key={v.id}
