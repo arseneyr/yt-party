@@ -1,9 +1,11 @@
 import React from 'react';
-import SearchBar from '../components/SearchBar';
+import { SearchBar, SearchResults } from '../container/SearchResults';
 
 export default () => (
-  <SearchBar
-    onChange={() => null}
-    onSubmit={() => null}
-  />
+  <div>
+    <SearchBar
+      onChange={() => null}
+    />
+    <SearchResults />
+  </div>
 );

@@ -33,7 +33,7 @@ const Home= ({ data }: any) => (
       </div>]
     : undefined
   }
-  <List>
+  <List theme={theme}>
     <ListSubHeader caption='Up Next' />
     {
       !data.loading && data.queue.length > 0 ?
@@ -43,6 +43,7 @@ const Home= ({ data }: any) => (
             key={v.id}
             caption={v.title}
             legend={v.queuedBy ? ['Queued by ', <b key={v.id}>{v.queuedBy}</b>] : undefined as any}
+            theme={theme}
             leftActions={[ <Avatar
               key={v.id}
               cover

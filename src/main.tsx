@@ -11,7 +11,7 @@ import { ApolloProvider } from 'react-apollo';
 
 const client = new ApolloClient();
 
-import { getReducer, injectReducer } from './reducer';
+import { getReducer, injectReducer, getEpicMiddleware } from './reducer';
 import App from './app';
 
 const devTools = DEVELOPMENT ? window.__REDUX_DEVTOOLS_EXTENSION__ : undefined;
@@ -19,10 +19,10 @@ if (devTools) {
   devTools.open();
 }
 
-injectReducer({ apollo: client.reducer() });
+injectReducer({ apollo: client.reducer() as Reducer<any> });
 
 const store = createStore(getReducer(), compose(
-  applyMiddleware(client.middleware()),
+  applyMiddleware(client.middleware(), getEpicMiddleware()),
   devTools ? devTools() : (f: any) => f
 ));
 
@@ -54,6 +54,12 @@ const renderApp = (Component = App) => {
 if (DEVELOPMENT && module.hot) {
   store.replaceReducer(getReducer());
   module.hot.accept('./app', () => renderApp());
+}
+
+if (DEVELOPMENT) {
+  console.ignoredYellowBox = [
+    'Warning: Failed prop type: Invalid prop `legend`'
+  ];
 }
 
 renderApp();

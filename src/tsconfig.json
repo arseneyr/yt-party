@@ -10,7 +10,7 @@
       "types",
       "../node_modules/@types"
     ],
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "baseUrl": "types",
     "sourceMap": true

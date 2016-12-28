@@ -38,8 +38,13 @@ export default graphqlExpress({ schema: makeExecutableSchema({
       error: String
     }
 
+    type QueueVideoResult {
+      error: String
+    }
+
     type Mutation {
       createUser(name: String!): CreateUserResult
+      queueVideo(id: String!): QueueVideoResult
     }
 
     schema {
@@ -49,7 +54,7 @@ export default graphqlExpress({ schema: makeExecutableSchema({
   `,
   resolvers: {
     Query: {
-      queue: () => mockData.videos.map(v => ({...v, title: chance.sentence({words: 20}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/default.jpg`})),
+      queue: () => mockData.videos.map(v => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/default.jpg`})),
       nowPlaying: () => ({...mockData.videos[0], title: chance.sentence({words: 10}), thumbnailUrl: `http://img.youtube.com/vi/${mockData.videos[0].id}/maxresdefault.jpg`, queuedBy: chance.name()}),
       currentUser: () => ({ admin: false, name: currentUser })
     },
@@ -66,7 +71,13 @@ export default graphqlExpress({ schema: makeExecutableSchema({
             admin: false
           }
         }
-      })
+      }),
+      queueVideo: (_, {id}) => {
+        mockData.videos.push({id});
+        return {
+          error: null
+        }
+      }
     }
   }
 })

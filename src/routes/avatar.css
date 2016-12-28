@@ -13,12 +13,12 @@
   position: relative;
 }
 
-[data-react-toolbox='list-item-text'] {
+.itemText {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-[data-react-toolbox='list'] span {
+.list span {
   min-width: 0;
 }

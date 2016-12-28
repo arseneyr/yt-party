@@ -1,5 +1,7 @@
-import { Action, combineReducers } from 'redux';
+import { Action, combineReducers, Reducer } from 'redux';
 import createBrowserHistory from 'history/createBrowserHistory';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Epic, createEpicMiddleware } from 'redux-observable';
 
 const history = createBrowserHistory();
 
@@ -35,11 +37,28 @@ let reducers = {
   router: routerStore
 };
 
-export function injectReducer(reducer: any) {
+export function injectReducer<T>(reducer: {[name: string]: Reducer<T>}) {
   reducers = {
     ...reducers,
     ...reducer
   }
 }
 
+const epic$ = new BehaviorSubject((actions$: any) => Observable.empty())
+
+export const rootEpic = (action$: any, store: any) =>
+  epic$.mergeMap((epic:any) =>
+    epic(action$, store)
+  )
+
+let epics = {};
+
+export const injectEpic = ({name, epic}) => {
+  if (!epics[name]) {
+    epics[name] = epic;
+    epic$.next(epic);
+  }
+}
+
 export const getReducer = () => combineReducers(reducers);
+export const getEpicMiddleware = () => createEpicMiddleware(rootEpic);

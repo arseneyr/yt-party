@@ -10,9 +10,19 @@ interface Window {
   __REDUX_DEVTOOLS_EXTENSION__: DevTools;
 }
 
+interface Console {
+  ignoredYellowBox: string[]
+}
+
 declare module 'react-router-scroll' {
   let useScroll: () => any;
   export = useScroll;
+}
+
+declare module 'xhr' {
+  function xhr(url: string, opts: any, callback: (err, resp,body)=>void): void;
+  module xhr {}
+  export = xhr;
 }
 
 declare module '*.css' {
