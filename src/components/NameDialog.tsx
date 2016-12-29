@@ -8,6 +8,7 @@ import { graphql, compose } from 'react-apollo';
 import theme from './NameDialog.css';
 
 interface NameDialogProps {
+  CurrentUserQuery: any;
   data: any;
   createUser: (name: string) => any;
 }
@@ -50,8 +51,8 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
   render() {
     return (
       <Dialog
-        title='Welcome!'
-        active={!this.props.data.loading && !this.props.data.currentUser.name}
+        title='Welcome to #notmyyear!'
+        active={this.props.CurrentUserQuery.loading || !this.props.CurrentUserQuery.currentUser}
         actions={[{
           label: this.state.waiting ? <ProgressBar type='circular' theme={theme} /> : 'GO!',
           disabled: !this.state.inputText || !!this.state.error || this.state.waiting,
@@ -63,6 +64,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
           label='Choose a cool name'
           value={this.state.inputText}
           error={this.state.error}
+          disabled={this.state.waiting}
           onChange={(inputText: string) => this.setState({ ...this.state, inputText, error: '' })}
           onFocus={() => this.setState({ ...this.state, error: '' })}
           onKeyPress={(event: React.KeyboardEvent<this>) => event.key === 'Enter' ? this.onSubmit() : undefined}
@@ -75,7 +77,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
 const CurrentUser = gql`
   query CurrentUser {
     currentUser {
-      name
+      id
       admin
     }
   }
@@ -85,7 +87,7 @@ const CreateUser = gql`
   mutation CreateUser($name: String!) {
     createUser(name: $name) {
       user {
-        name
+        id
         admin
       }
       error
@@ -93,18 +95,18 @@ const CreateUser = gql`
   }
 `
 export default compose(
-  graphql(CurrentUser),
+  graphql(CurrentUser, {name: 'CurrentUserQuery'}),
   graphql(CreateUser, {
     props: ({ mutate }) => ({
       createUser: (name: string) => mutate({
         variables: { name },
         updateQueries: {
-          CurrentUser: (prev: any, { mutationResult }: any) => (
-            mutationResult.data.createUser.user
+          CurrentUser: (prev: any, { mutationResult }: any) => {
+            return mutationResult.data.createUser.user
               ? { ...prev, currentUser: mutationResult.data.createUser.user }
               : prev
-          )
-        }
+          }
+      }
       })
     })
   }),

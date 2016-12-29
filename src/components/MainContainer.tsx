@@ -11,7 +11,10 @@ const subscription = gql`
       id
       title
       thumbnailUrl
-      queuedBy
+      queuedBy {
+        name
+        id
+      }
     }
   }
 `;

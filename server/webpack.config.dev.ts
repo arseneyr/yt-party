@@ -2,7 +2,7 @@ import * as webpack from 'webpack';
 import * as LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
 import * as merge from 'webpack-merge';
 import base from './webpack.config.base';
-import APP_CONFIG from '../config';
+import { clientConfig } from '../config';
 
 const config: webpack.Configuration = {
   devtool: 'eval-source-map',
@@ -21,7 +21,7 @@ const config: webpack.Configuration = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       },
       DEVELOPMENT: true,
-      APP_CONFIG: JSON.stringify(APP_CONFIG)
+      APP_CONFIG: JSON.stringify(clientConfig)
     })
   ],
   stats: {

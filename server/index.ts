@@ -1,4 +1,6 @@
 import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
+import * as uuid from 'uuid';
 const app = express();
 import * as historyMiddleware from 'connect-history-api-fallback';
 import * as devMiddleware from 'webpack-dev-middleware';
@@ -8,6 +10,7 @@ import * as path from 'path';
 import * as bodyParser from 'body-parser';
 import { graphiqlExpress } from 'graphql-server-express';
 import graphql from './graphql';
+import { serverConfig as APP_CONFIG } from '../config';
 
 import * as webpack from 'webpack';
 import devConfig from './webpack.config.dev';
@@ -19,6 +22,8 @@ const compiler = webpack(config);
 
 //app.use(compression());
 
+app.use(cookieParser(APP_CONFIG.COOKIE_KEY));
+
 if (!isProd) {
   app.use('/graphiql', graphiqlExpress({
     endpointURL: '/graphql'
@@ -27,6 +32,12 @@ if (!isProd) {
 
 app.use('/graphql', bodyParser.json(), graphql);
 app.use(historyMiddleware());
+app.use('/index.html', (req,res,next) => {
+  if (!req.signedCookies.user) {
+    res.cookie('user', uuid.v4(), {signed: true, maxAge: 86400000})
+  }
+  next();
+});
 
 if (!isProd) {
   app.use(hotMiddleware(compiler));

@@ -9,7 +9,6 @@ import actions from './actions';
 import Home from './routes/home';
 import Search from './routes/search';
 
-import 'react-toolbox/lib/commons.css';
 import './styles/main.css';
 
 const App = ({ router, setLocation }: any) => (

@@ -18,7 +18,7 @@ const Queue = ({ loading, queue }: any) => (
         />
         <CardTitle
           title={queue[0].title}
-          subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy}</b>]}
+          subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy.name}</b>]}
         />
         <CardActions>
           <Button label="SKIP!" />
@@ -42,7 +42,7 @@ const Queue = ({ loading, queue }: any) => (
             ripple={false}
             key={v.id}
             caption={v.title}
-            legend={v.queuedBy ? ['Queued by ', <b key={v.id}>{v.queuedBy}</b>] : undefined as any}
+            legend={v.queuedBy.name ? ['Queued by ', <b key={v.id}>{v.queuedBy.name}</b>] : undefined as any}
             theme={theme}
             leftActions={[ <Avatar
               key={v.id}

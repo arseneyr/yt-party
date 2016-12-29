@@ -8,7 +8,10 @@ export const withQueue = graphql(gql`
       id
       thumbnailUrl
       title
-      queuedBy
+      queuedBy {
+        name
+        id
+      }
     }
   }
 `, {

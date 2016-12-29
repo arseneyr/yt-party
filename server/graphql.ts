@@ -8,7 +8,7 @@ import { createServer } from 'http';
 
 const chance = new Chance();
 const mockData: {videos: {id: string}[]} = require('../testdata.json');
-let currentUser: string = null;
+let currentUser: {id:string, admin:boolean} = null;
 let wrongTries = 1;
 
 const websocketServer = createServer((req,res) => {
@@ -18,26 +18,27 @@ const websocketServer = createServer((req,res) => {
 
 websocketServer.listen(8080);
 
-const getVideos = () => mockData.videos.map((v,i) => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:chance.name(), thumbnailUrl: `https://img.youtube.com/vi/${v.id}/${i==0 ? 'maxresdefault' : 'default'}.jpg`}));
+const getVideos = () => mockData.videos.map((v,i) => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:{name:chance.name(),id:chance.string(),admin:false}, thumbnailUrl: `https://img.youtube.com/vi/${v.id}/${i==0 ? 'maxresdefault' : 'default'}.jpg`}));
 
 const schema = makeExecutableSchema({
   typeDefs: `
     type Video {
       id: String!
       title: String!
+      youtubeId: String!
       thumbnailUrl: String
-      queuedBy: String
+      queuedBy: User
     }
 
-    type CurrentUser {
+    type User {
+      id: String!
       name: String
       admin: Boolean!
     }
 
     type Query {
-      currentUser: CurrentUser!
+      currentUser: User
       queue: [Video]!
-      video(id: String!) : Video
     }
 
     type Error {
@@ -45,7 +46,7 @@ const schema = makeExecutableSchema({
     }
 
     type CreateUserResult {
-      user: CurrentUser
+      user: User
       error: String
     }
 
@@ -71,20 +72,20 @@ const schema = makeExecutableSchema({
   resolvers: {
     Query: {
       queue: getVideos,
-      currentUser: () => ({ admin: false, name: currentUser })
+      currentUser: () => currentUser
     },
 
     Mutation: {
-      createUser: (_, {name}) => Promise.delay(1000).then(() => {
+      createUser: (_, {name}, {user}) => Promise.delay(1000).then(() => {
+        if (!user) {
+          return {error: "HACKER!"};
+        }
         if (wrongTries-- > 0) {
           return { error: "Name already taken!" };
         }
-        currentUser = name;
+        currentUser = { id: user, admin:false };
         return {
-          user: {
-            name: currentUser,
-            admin: false
-          }
+          user: currentUser
         }
       }),
       queueVideo: (_, {id}) => {
@@ -117,4 +118,4 @@ new SubscriptionServer({
   subscriptionManager
 }, websocketServer);
 
-export default graphqlExpress({ schema });
+export default graphqlExpress(req => ({ schema, context: { user: req.signedCookies.user } }));
