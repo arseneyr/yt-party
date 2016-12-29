@@ -65,10 +65,4 @@ if (DEVELOPMENT && module.hot) {
   module.hot.accept('./app', () => renderApp());
 }
 
-if (DEVELOPMENT) {
-  console.ignoredYellowBox = [
-    'Warning: Failed prop type: Invalid prop `legend`'
-  ];
-}
-
 renderApp();

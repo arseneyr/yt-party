@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardMedia, CardTitle } from 'react-toolbox/lib/card';
+import { Card, CardMedia, CardTitle, CardActions } from 'react-toolbox/lib/card';
 import { List, ListItem, ListSubHeader } from 'react-toolbox/lib/list';
 import { Avatar } from 'react-toolbox/lib/avatar';
 import { Button } from 'react-toolbox/lib/button';
@@ -11,7 +11,7 @@ const Queue = ({ loading, queue }: any) => (
   <div>
   {
     !loading && queue.length > 0
-      ? [<Card raised key='sure'>
+      ? <Card raised key='sure'>
         <CardMedia
           aspectRatio='wide'
           image={queue[0].thumbnailUrl}
@@ -20,16 +20,19 @@ const Queue = ({ loading, queue }: any) => (
           title={queue[0].title}
           subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy}</b>]}
         />
-      </Card>,
-      <div className={theme.floatingAddButtonContainer} >
-        <Link to='/search'>{
-          ({onClick}: any) =>
-            <Button icon='add' onClick={onClick} theme={theme} floating accent/>
-        }
-        </Link>
-      </div>]
+        <CardActions>
+          <Button label="SKIP!" />
+        </CardActions>
+      </Card>
     : undefined
   }
+  <div className={theme.floatingAddButtonContainer} >
+    <Link to='/search'>{
+      ({onClick}: any) =>
+        <Button icon='add' onClick={onClick} theme={theme} floating accent/>
+    }
+    </Link>
+  </div>
   <List theme={theme}>
     <ListSubHeader caption='Up Next' />
     {
