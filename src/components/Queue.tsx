@@ -2,12 +2,12 @@ import React from 'react';
 import { Card, CardMedia, CardTitle, CardActions } from 'react-toolbox/lib/card';
 import { List, ListItem, ListSubHeader } from 'react-toolbox/lib/list';
 import { Avatar } from 'react-toolbox/lib/avatar';
-import { Button } from 'react-toolbox/lib/button';
+import { Button, IconButton } from 'react-toolbox/lib/button';
 import { Link } from 'react-router';
 
 import theme from './Queue.css';
 
-const Queue = ({ loading, queue }: any) => (
+const Queue = ({ loading, queue, currentUser, deleteVideo }: any) => (
   <div>
   {
     !loading && queue.length > 0
@@ -20,9 +20,11 @@ const Queue = ({ loading, queue }: any) => (
           title={queue[0].title}
           subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy.name}</b>]}
         />
+        { (queue[0].queuedBy.id === currentUser.id || currentUser.admin) &&
         <CardActions>
-          <Button label="SKIP!" />
+          <Button label="SKIP!" onClick={() => deleteVideo(queue[0].id)} />
         </CardActions>
+        }
       </Card>
     : undefined
   }
@@ -44,6 +46,9 @@ const Queue = ({ loading, queue }: any) => (
             caption={v.title}
             legend={v.queuedBy.name ? ['Queued by ', <b key={v.id}>{v.queuedBy.name}</b>] : undefined as any}
             theme={theme}
+            rightActions={(v.queuedBy.id === currentUser.id || currentUser.admin) && [
+              <IconButton icon='delete' onClick={() => deleteVideo(v.id)}/>
+            ]}
             leftActions={[ <Avatar
               key={v.id}
               cover

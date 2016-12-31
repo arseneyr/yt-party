@@ -150,10 +150,8 @@ const withMutation = graphql(mutation, {
         }
       },
       updateQueries: {
-        Queue: (prev, { mutationResult }) => (
-          prev.queue.find(v => v.id === id)
-          ? prev
-          : {...prev, queue: prev.queue.concat({__typename: 'Video', id, thumbnailUrl, title, queuedBy:'Me'})})
+        Queue: (prev, { mutationResult }) => (prev && prev.queue && !prev.queue.find(v=>v.youtubeId === id) ?
+        {...prev, queue: prev.queue.concat({__typename: 'Video', title, id: '', queuedBy: {name:'',id:''}, youtubeId: id, thumbnailUrl})} : prev)
       }
     })
   })
@@ -165,7 +163,7 @@ export const SearchResults = compose(
   connect((state: any, ownProps: any) => ({
     ...ownProps,
     ...state.search,
-    results: state.search.results.map((r,i) => ({...r, selected: !!ownProps.queue.find(q => q.id === r.id)}))
+    results: state.search.results.map((r,i) => ({...r, selected: !!ownProps.queue.find(q => q.youtubeId === r.id)}))
   })),
 )(SearchResultsComponent);
 

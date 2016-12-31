@@ -38,7 +38,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
 
   onSubmit = () => {
     this.setState({ ...this.state, waiting: true });
-    this.props.createUser(this.state.inputText)
+    this.props.createUser(this.state.inputText.trim())
       .then(({ data }: any) => {
         if (data.createUser.error) {
           this.setState({ ...this.state, waiting: false, error: data.createUser.error })
@@ -52,7 +52,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
     return (
       <Dialog
         title='Welcome to #notmyyear!'
-        active={this.props.CurrentUserQuery.loading || !this.props.CurrentUserQuery.currentUser}
+        active={!this.props.CurrentUserQuery.loading && !this.props.CurrentUserQuery.currentUser}
         actions={[{
           label: this.state.waiting ? <ProgressBar type='circular' theme={theme} /> : 'GO!',
           disabled: !this.state.inputText || !!this.state.error || this.state.waiting,
@@ -82,6 +82,10 @@ const CurrentUser = gql`
     }
   }
 `
+
+export const withCurrentUser = graphql(CurrentUser, {
+  props: ({ownProps, data}) => ({...ownProps, currentUser: data.currentUser})
+});
 
 const CreateUser = gql`
   mutation CreateUser($name: String!) {

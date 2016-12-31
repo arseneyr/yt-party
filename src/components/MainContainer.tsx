@@ -9,6 +9,7 @@ const subscription = gql`
   subscription QueueChanged {
     queueChanged {
       id
+      youtubeId
       title
       thumbnailUrl
       queuedBy {

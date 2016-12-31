@@ -5,11 +5,18 @@ import { PubSub, SubscriptionManager } from 'graphql-subscriptions';
 import * as Chance from 'chance';
 import * as Promise from 'bluebird';
 import { createServer } from 'http';
+import * as db from './db';
+import {serverConfig as APP_CONFIG} from '../config';
+import * as rp from 'request-promise';
+import * as uuid from 'uuid';
 
 const chance = new Chance();
 const mockData: {videos: {id: string}[]} = require('../testdata.json');
 let currentUser: {id:string, admin:boolean} = null;
 let wrongTries = 1;
+
+let inFlightNames: {[name:string]: boolean} = {};
+let videoList: any = [];
 
 const websocketServer = createServer((req,res) => {
   res.writeHead(404);
@@ -57,6 +64,8 @@ const schema = makeExecutableSchema({
     type Mutation {
       createUser(name: String!): CreateUserResult
       queueVideo(id: String!): QueueVideoResult
+      deleteVideo(id: String!): QueueVideoResult
+      skipVideo: QueueVideoResult
     }
 
     type Subscription {
@@ -71,34 +80,95 @@ const schema = makeExecutableSchema({
   `,
   resolvers: {
     Query: {
-      queue: getVideos,
-      currentUser: () => currentUser
+      queue: () => videoList,
+      currentUser: (_, __, {userId}) => {
+        if (!userId) {
+          return null;
+        }
+
+        return db.findUser(userId);
+      }
     },
 
     Mutation: {
-      createUser: (_, {name}, {user}) => Promise.delay(1000).then(() => {
+      createUser: (_, {name}, {userId}) => {
+        if (!userId) {
+          return {user: null, error: "HACKER!"};
+        }
+
+        if (inFlightNames[name]) {
+          return {user: null, error: "Name already taken!"};
+        }
+
+        inFlightNames[name] = true;
+
+        return db.doesNameExist(name).then(exists => {
+          if (exists) {
+            delete inFlightNames[name];
+            return {user:null, error: "Name already taken!"};
+          }
+
+          const newUser = {id: userId, name, admin: APP_CONFIG.ADMIN_NAMES.indexOf(name) !== -1};
+          return db.createUser(newUser).then(() => {delete inFlightNames[name]; return {error: null, user: newUser}});
+        })
+      },
+      queueVideo: (_, {id}, {userId}) => db.findUser(userId).then((user: any) => {
         if (!user) {
-          return {error: "HACKER!"};
+          return {error: "No username!"};
         }
-        if (wrongTries-- > 0) {
-          return { error: "Name already taken!" };
+        if (!user.admin && videoList.find(v => v.youtubeId == id)) {
+          return {error: "Already queued!"};
         }
-        currentUser = { id: user, admin:false };
-        return {
-          user: currentUser
-        }
+
+        let newVideo: any = {
+          id: uuid.v4(),
+          queuedAt: new Date(),
+          youtubeId: id,
+          queuedBy: user,
+        };
+        const thumbnailUrl = `https://img.youtube.com/vi/${id}/${videoList.length==0 ? 'hqdefault' : 'default'}.jpg`;
+        videoList.push(newVideo);
+        return rp(APP_CONFIG.YOUTUBE_VIDEOS_ENDPOINT, {
+          json: true,
+          qs: {
+            key: APP_CONFIG.YOUTUBE_API_KEY,
+            part: 'snippet',
+            id,
+            fields: 'items(snippet(title))'
+        }}).then(body => {
+          newVideo.title = body.items[0].snippet.title;
+          const p = db.addVideo(newVideo);
+          newVideo.thumbnailUrl = thumbnailUrl;
+          pubsub.publish('queueChanged', videoList);
+          return p;
+        }).then(() => ({error: null}))
       }),
-      queueVideo: (_, {id}) => {
-        mockData.videos.push({id});
-        pubsub.publish('queueChanged', getVideos());
-        return {
-          error: null
+      deleteVideo: (_, {id}, {userId}) => db.findUser(userId).then((user:any) => {
+        const videoIndex = videoList.findIndex((v:any) => v.id == id);
+        if (!user || videoIndex === -1 || (videoList[videoIndex].queuedBy.id !== userId && !user.admin)) {
+          return {error:null};
         }
+
+        videoList.splice(videoIndex, 1);
+        if (videoIndex === 0 && videoList.length > 0) {
+          videoList[0].thumbnailUrl = `https://img.youtube.com/vi/${videoList[0].youtubeId}/hqdefault.jpg`;
+        }
+        pubsub.publish('queueChanged', videoList);
+        return db.deleteVideo(id).then(() => ({error:null}));
+      }),
+      skipVideo: () => {
+        const id = videoList[0].id;
+        videoList.splice(0, 1);
+        if (videoList.length > 0) {
+          videoList[0].thumbnailUrl = `https://img.youtube.com/vi/${videoList[0].youtubeId}/hqdefault.jpg`;
+        }
+        pubsub.publish('queueChanged', videoList);
+        return db.deleteVideo(id).then(() => ({error:null}));
       }
     },
 
     Subscription: {
-      queueChanged: () => getVideos()
+      queueChanged: () => videoList
     }
   }
 });
@@ -118,4 +188,9 @@ new SubscriptionServer({
   subscriptionManager
 }, websocketServer);
 
-export default graphqlExpress(req => ({ schema, context: { user: req.signedCookies.user } }));
+export default db.connect()
+  .then(db.getVideos)
+  .then(videos => {
+    videoList = videos.map((v,i) => ({...v,thumbnailUrl:`https://img.youtube.com/vi/${v.youtubeId}/${i==0 ? 'hqdefault' : 'default'}.jpg`}));
+    return graphqlExpress(req => ({ schema, context: { userId: req.signedCookies && req.signedCookies.user } }));
+  });

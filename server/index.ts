@@ -20,7 +20,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const config = isProd ? prodConfig : devConfig;
 const compiler = webpack(config);
 
-//app.use(compression());
+app.use(compression());
 
 app.use(cookieParser(APP_CONFIG.COOKIE_KEY));
 
@@ -30,43 +30,49 @@ if (!isProd) {
   }));
 }
 
-app.use('/graphql', bodyParser.json(), graphql);
-app.use(historyMiddleware());
-app.use('/index.html', (req,res,next) => {
-  if (!req.signedCookies.user) {
-    res.cookie('user', uuid.v4(), {signed: true, maxAge: 86400000})
-  }
-  next();
-});
-
-if (!isProd) {
-  app.use(hotMiddleware(compiler));
-
-  app.use(devMiddleware(compiler, {
-    noInfo: false,
-    publicPath: config.output.publicPath,
-    stats: {
-      colors: true
+graphql.then(g => {
+  app.use('/graphql', bodyParser.json(), g);
+  app.use(historyMiddleware({
+  rewrites: [
+    { from: /\/player\/?$/, to: '/player.html'}
+  ]
+}));
+  app.use('/index.html', (req,res,next) => {
+    if (!req.signedCookies.user) {
+      res.cookie('user', uuid.v4(), {signed: true, maxAge: 86400000})
     }
-  }));
+    next();
+  });
 
-  app.listen(3000);
+  if (!isProd) {
+    app.use(hotMiddleware(compiler));
 
-} else {
-  app.use('/static', express.static(path.resolve(__dirname, '../build'), {maxAge: '1y'}));
-  app.use('/', express.static(path.resolve(__dirname, '../build')));
-
-  compiler.run((err,stats) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-
-    console.log(stats.toString({
-      colors: true,
-      chunks: false
+    app.use(devMiddleware(compiler, {
+      noInfo: false,
+      publicPath: config.output.publicPath,
+      stats: {
+        colors: true
+      }
     }));
 
-    app.listen(80);
-  })
-}
+    app.listen(3000);
+
+  } else {
+    app.use('/static', express.static(path.resolve(__dirname, '../build'), {maxAge: '1y'}));
+    app.use('/', express.static(path.resolve(__dirname, '../build')));
+
+    compiler.run((err,stats) => {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+
+      console.log(stats.toString({
+        colors: true,
+        chunks: false
+      }));
+
+      app.listen(80);
+    })
+  }
+});

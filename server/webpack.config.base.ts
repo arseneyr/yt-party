@@ -8,15 +8,22 @@ const srcPath = path.resolve(__dirname, '../src');
 
 const config: Configuration = {
   context: srcPath,
-  entry: [
-    './main.tsx'
-  ],
+  entry: {
+    main: './main.tsx',
+    player: './player.tsx'
+  },
   output: {
     path: path.resolve(__dirname, '../build')
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(srcPath, './index.html')
+      template: path.resolve(srcPath, './index.html'),
+      excludeChunks: ['player']
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(srcPath, './index.html'),
+      filename: 'player.html',
+      chunks: ['player']
     }),
     new LoaderOptionsPlugin({
       options: {
