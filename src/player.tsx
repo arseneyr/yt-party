@@ -50,6 +50,9 @@ class PlayerComponent extends React.Component<any,any> {
     <YouTube
       videoId={this.props.data.queue && this.props.data.queue[0] && this.props.data.queue[0].youtubeId}
       onReady={event => event.target.playVideo()}
+      opts={{playerVars:{
+        iv_load_policy: 3
+      }}}
       onEnd={() => this.props.skipVideo()}
       onStateChange={event => {console.log(event); if (event.data === 5 ) {event.target.playVideo()}}}
     />
