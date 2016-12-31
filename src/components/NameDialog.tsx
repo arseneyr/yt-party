@@ -51,7 +51,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
   render() {
     return (
       <Dialog
-        title='Welcome to #notmyyear!'
+        title={`Let's go. #notmyyear`}
         active={!this.props.CurrentUserQuery.loading && !this.props.CurrentUserQuery.currentUser}
         actions={[{
           label: this.state.waiting ? <ProgressBar type='circular' theme={theme} /> : 'GO!',
@@ -61,7 +61,7 @@ class NameDialog extends React.Component<NameDialogProps, NameDialogState> {
       >
         <Input
           ref={(e:any) => this.input = e}
-          label='Choose a cool name'
+          label='Choose a name'
           value={this.state.inputText}
           error={this.state.error}
           disabled={this.state.waiting}
