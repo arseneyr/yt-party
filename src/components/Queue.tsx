@@ -20,7 +20,7 @@ const Queue = ({ loading, queue, currentUser, deleteVideo }: any) => (
           title={queue[0].title}
           subtitle={['Queued by ', <b key='yup'>{queue[0].queuedBy.name}</b>]}
         />
-        { (queue[0].queuedBy.id === currentUser.id || currentUser.admin) &&
+        { currentUser && (queue[0].queuedBy.id === currentUser.id || currentUser.admin) &&
         <CardActions>
           <Button label="SKIP!" onClick={() => deleteVideo(queue[0].id)} />
         </CardActions>
@@ -46,7 +46,7 @@ const Queue = ({ loading, queue, currentUser, deleteVideo }: any) => (
             caption={v.title}
             legend={v.queuedBy.name ? ['Queued by ', <b key={v.id}>{v.queuedBy.name}</b>] : undefined as any}
             theme={theme}
-            rightActions={(v.queuedBy.id === currentUser.id || currentUser.admin) && [
+            rightActions={currentUser && (v.queuedBy.id === currentUser.id || currentUser.admin) && [
               <IconButton icon='delete' onClick={() => deleteVideo(v.id)}/>
             ]}
             leftActions={[ <Avatar
