@@ -108,7 +108,7 @@ const schema = makeExecutableSchema({
             return {user:null, error: "Name already taken!"};
           }
 
-          const newUser = {id: userId, name, admin: APP_CONFIG.ADMIN_NAMES.indexOf(name) !== -1};
+          const newUser = {id: userId, name, admin: APP_CONFIG.ADMIN_NAMES.indexOf(name.toLowerCase()) !== -1};
           return db.createUser(newUser).then(() => {delete inFlightNames[name]; return {error: null, user: newUser}});
         })
       },
@@ -185,7 +185,8 @@ const subscriptionManager = new SubscriptionManager({
 });
 
 new SubscriptionServer({
-  subscriptionManager
+  subscriptionManager,
+  keepAlive: 2000
 }, websocketServer);
 
 export default db.connect()

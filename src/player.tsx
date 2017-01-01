@@ -46,7 +46,7 @@ class PlayerComponent extends React.Component<any,any> {
   }
 
   render() {
-    return this.props.data.loading ? <div></div> :
+    return this.props.data.loading || this.props.data.queue.length == 0 ? <div></div> :
     <YouTube
       videoId={this.props.data.queue && this.props.data.queue[0] && this.props.data.queue[0].youtubeId}
       onReady={event => event.target.playVideo()}

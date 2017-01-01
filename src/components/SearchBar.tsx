@@ -66,6 +66,10 @@ export default class SearchBar extends React.Component<SearchBarProps, SearchBar
           hint='Search'
           showSuggestionsWhenValueIsSet
           type='search'
+          autocorrect='off'
+          spellcheck='false'
+          autocomplete='off'
+          autocapitalize='off'
         />
       </form>
     </AppBar>

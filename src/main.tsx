@@ -17,7 +17,7 @@ const client = new ApolloClient({
     opts: {
       credentials: 'same-origin'
     }
-  }), new Client(`ws://${window.location.hostname}:9090`))
+  }), new Client(`ws://${window.location.hostname}:9090`, {reconnect: true}))
 });
 
 import { getReducer, injectReducer, getEpicMiddleware } from './reducer';
