@@ -10,10 +10,10 @@ const config: webpack.Configuration = {
     filename: '[name].js',
     publicPath: '/'
   },
-  entry: [
-    'react-hot-loader/patch',
-    'webpack-hot-middleware/client'
-  ],
+  entry: {
+    hotLoader: 'react-hot-loader/patch',
+    hotMiddleware: 'webpack-hot-middleware/client'
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({

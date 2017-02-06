@@ -6,6 +6,17 @@ import { Configuration } from 'webpack';
 
 const srcPath = path.resolve(__dirname, '../src');
 
+// Fixes sort order so hot loader is always first.
+const chunkSorter = (chunk1: any, chunk2: any) => {
+  if (chunk1.names[0] === 'hotLoader') {
+    return -1;
+  } else if (chunk2.names[0] === 'hotLoader') {
+    return 1;
+  }
+
+  return 0;
+};
+
 const config: Configuration = {
   context: srcPath,
   entry: {
@@ -18,6 +29,7 @@ const config: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(srcPath, './index.html'),
+      chunksSortMode: chunkSorter,
       excludeChunks: ['player']
     }),
     new HtmlWebpackPlugin({

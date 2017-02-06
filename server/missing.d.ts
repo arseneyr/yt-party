@@ -21,3 +21,8 @@ declare module 'webpack/lib/LoaderOptionsPlugin' {
   let _f: any;
   export = _f;
 }
+
+declare module 'webpack-merge' {
+  let _f: any;
+  export = _f;
+}

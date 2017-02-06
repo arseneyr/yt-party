@@ -43,7 +43,10 @@ const config: webpack.Configuration = {
       DEVELOPMENT: false,
       APP_CONFIG: JSON.stringify(clientConfig)
     }),
-    new ExtractTextPlugin('styles.[contenthash].css')
+    new ExtractTextPlugin('styles.[contenthash].css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor', 'manifest']
+    })
   ],
   module: {
     rules: [

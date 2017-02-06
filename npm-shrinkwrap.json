@@ -213,6 +213,11 @@
       "resolved": "https://registry.npmjs.org/@types/webpack-merge/-/webpack-merge-0.0.4.tgz",
       "dev": true
     },
+    "@types/ws": {
+      "version": "0.0.37",
+      "from": "@types/ws@0.0.37",
+      "resolved": "https://registry.npmjs.org/@types/ws/-/ws-0.0.37.tgz"
+    },
     "abbrev": {
       "version": "1.0.9",
       "from": "abbrev@>=1.0.0 <2.0.0",
@@ -1656,6 +1661,11 @@
       "from": "etag@>=1.7.0 <1.8.0",
       "resolved": "https://registry.npmjs.org/etag/-/etag-1.7.0.tgz"
     },
+    "eventemitter3": {
+      "version": "2.0.2",
+      "from": "eventemitter3@>=2.0.2 <3.0.0",
+      "resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-2.0.2.tgz"
+    },
     "events": {
       "version": "1.1.1",
       "from": "events@>=1.0.0 <2.0.0",
@@ -2338,7 +2348,8 @@
     "is-typedarray": {
       "version": "1.0.0",
       "from": "is-typedarray@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/is-typedarray/-/is-typedarray-1.0.0.tgz"
+      "resolved": "https://registry.npmjs.org/is-typedarray/-/is-typedarray-1.0.0.tgz",
+      "dev": true
     },
     "is-utf8": {
       "version": "0.2.1",
@@ -2883,7 +2894,8 @@
     "nan": {
       "version": "2.5.0",
       "from": "nan@>=2.3.3 <3.0.0",
-      "resolved": "https://registry.npmjs.org/nan/-/nan-2.5.0.tgz"
+      "resolved": "https://registry.npmjs.org/nan/-/nan-2.5.0.tgz",
+      "dev": true
     },
     "ncname": {
       "version": "1.0.0",
@@ -3068,6 +3080,11 @@
       "from": "onecolor@>=2.4.0 <2.5.0",
       "resolved": "https://registry.npmjs.org/onecolor/-/onecolor-2.4.2.tgz",
       "dev": true
+    },
+    "options": {
+      "version": "0.0.6",
+      "from": "options@>=0.0.5",
+      "resolved": "https://registry.npmjs.org/options/-/options-0.0.6.tgz"
     },
     "os-browserify": {
       "version": "0.2.1",
@@ -4417,11 +4434,6 @@
       "resolved": "https://registry.npmjs.org/style-loader/-/style-loader-0.13.1.tgz",
       "dev": true
     },
-    "subscriptions-transport-ws": {
-      "version": "0.3.1",
-      "from": "subscriptions-transport-ws@>=0.3.1 <0.4.0",
-      "resolved": "https://registry.npmjs.org/subscriptions-transport-ws/-/subscriptions-transport-ws-0.3.1.tgz"
-    },
     "supports-color": {
       "version": "2.0.0",
       "from": "supports-color@>=2.0.0 <3.0.0",
@@ -4558,11 +4570,6 @@
       "resolved": "https://registry.npmjs.org/typed-graphql/-/typed-graphql-1.0.2.tgz",
       "optional": true
     },
-    "typedarray-to-buffer": {
-      "version": "3.1.2",
-      "from": "typedarray-to-buffer@>=3.1.2 <4.0.0",
-      "resolved": "https://registry.npmjs.org/typedarray-to-buffer/-/typedarray-to-buffer-3.1.2.tgz"
-    },
     "typescript": {
       "version": "2.2.0-dev.20161229",
       "from": "typescript@>=2.2.0-dev.20161201 <3.0.0",
@@ -4599,6 +4606,11 @@
       "from": "uglify-to-browserify@>=1.0.0 <1.1.0",
       "resolved": "https://registry.npmjs.org/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz",
       "dev": true
+    },
+    "ultron": {
+      "version": "1.0.2",
+      "from": "ultron@>=1.0.0 <1.1.0",
+      "resolved": "https://registry.npmjs.org/ultron/-/ultron-1.0.2.tgz"
     },
     "uniq": {
       "version": "1.0.1",
@@ -4870,11 +4882,6 @@
         }
       }
     },
-    "websocket": {
-      "version": "1.0.24",
-      "from": "websocket@>=1.0.23 <2.0.0",
-      "resolved": "https://registry.npmjs.org/websocket/-/websocket-1.0.24.tgz"
-    },
     "whatwg-fetch": {
       "version": "2.0.1",
       "from": "whatwg-fetch@>=2.0.0 <3.0.0",
@@ -4927,6 +4934,11 @@
       "from": "wrappy@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"
     },
+    "ws": {
+      "version": "1.1.1",
+      "from": "ws@>=1.1.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/ws/-/ws-1.1.1.tgz"
+    },
     "xhr": {
       "version": "2.3.2",
       "from": "xhr@>=2.3.2 <3.0.0",
@@ -4948,11 +4960,6 @@
       "from": "y18n@>=3.2.1 <4.0.0",
       "resolved": "https://registry.npmjs.org/y18n/-/y18n-3.2.1.tgz",
       "dev": true
-    },
-    "yaeti": {
-      "version": "0.0.6",
-      "from": "yaeti@>=0.0.6 <0.0.7",
-      "resolved": "https://registry.npmjs.org/yaeti/-/yaeti-0.0.6.tgz"
     },
     "yallist": {
       "version": "2.0.0",
