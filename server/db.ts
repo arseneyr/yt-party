@@ -1,9 +1,28 @@
 import * as r from 'rethinkdb';
+import * as Promise from 'bluebird';
 import { serverConfig as APP_CONFIG } from '../config';
+import { readFileSync } from 'fs';
 
 let c: r.Connection = null;
 
-export const connect = () => r.connect({host: APP_CONFIG.DB_HOST}).then(e => (c=e,e));
+export const connect = () => r.connect({
+  host: APP_CONFIG.DB_HOST,
+  port: 80,
+  ssl: true
+  //ssl:{ca: readFileSync('./chain')}
+}).then(e => {
+  c = e;
+  return Promise.all([
+    r.db('test').tableCreate('users').run(c).catch(() => null).then(() =>
+      r.table('users').indexCreate('name').run(c).catch(() => null)
+    ).then(() => (r.table('users') as any).indexWait().run(c)),
+    r.db('test').tableCreate('videos').run(c).catch(() => null).then(() =>
+      r.table('videos').indexCreate('youtubeId').run(c).catch(() => null)
+    ).then(() =>
+      r.table('videos').indexCreate('queuedAt').run(c).catch(() => null)
+    ).then(() => (r.table('videos') as any).indexWait().run(c))
+  ]);
+});
 
 interface User {
   id: string;

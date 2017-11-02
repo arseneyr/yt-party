@@ -54,9 +54,9 @@ const config: webpack.Configuration = {
         test: /\.css$/,
         // Use `loader` instead of `use` due to
         // https://github.com/webpack/extract-text-webpack-plugin/issues/265
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
-          loader: [
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
             'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
             'postcss-loader',
           ]

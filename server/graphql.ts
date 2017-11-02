@@ -18,13 +18,6 @@ let wrongTries = 1;
 let inFlightNames: {[name:string]: boolean} = {};
 let videoList: any = [];
 
-const websocketServer = createServer((req,res) => {
-  res.writeHead(404);
-  res.end();
-});
-
-websocketServer.listen(9090);
-
 const getVideos = () => mockData.videos.map((v,i) => ({...v, title: chance.sentence({words: chance.integer({min: 1, max: 20})}), queuedBy:{name:chance.name(),id:chance.string(),admin:false}, thumbnailUrl: `https://img.youtube.com/vi/${v.id}/${i==0 ? 'maxresdefault' : 'default'}.jpg`}));
 
 const schema = makeExecutableSchema({
@@ -186,8 +179,11 @@ const subscriptionManager = new SubscriptionManager({
 
 new SubscriptionServer({
   subscriptionManager,
-  keepAlive: 2000
-}, websocketServer);
+  keepAlive: 2000,
+  onConnect: () => (console.log('connected!'),{}),
+  onDisconnect: () => (console.log('disconnected!'),{}),
+  onSubscribe: (_:any , params:any) => (pubsub.publish('queueChanged',videoList),params),
+}, {port: 9090});
 
 export default db.connect()
   .then(db.getVideos)

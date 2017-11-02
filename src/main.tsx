@@ -8,8 +8,12 @@ import 'normalize.css/normalize.css';
 
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
-import { Client } from 'subscriptions-transport-ws';
-import addGraphQLSubscriptions from './helper';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+
+const wsClient = new SubscriptionClient(`ws://${window.location.hostname}:9090`, {reconnect: true});
+
+export const onSubscriptionReconnect = (callback) => wsClient.onReconnect(callback);
+
 
 const client = new ApolloClient({
   networkInterface: addGraphQLSubscriptions(createNetworkInterface({
@@ -17,7 +21,7 @@ const client = new ApolloClient({
     opts: {
       credentials: 'same-origin'
     }
-  }), new Client(`ws://${window.location.hostname}:9090`, {reconnect: true}))
+  }), wsClient)
 });
 
 import { getReducer, injectReducer, getEpicMiddleware } from './reducer';

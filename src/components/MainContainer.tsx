@@ -1,43 +1,8 @@
 import React from 'react';
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import theme from './MainContainer.css';
 import NameDialog from './NameDialog';
-import { withQueue } from '../container/Queue';
-
-const subscription = gql`
-  subscription QueueChanged {
-    queueChanged {
-      id
-      youtubeId
-      title
-      thumbnailUrl
-      queuedBy {
-        name
-        id
-      }
-    }
-  }
-`;
 
 class MainContainer extends React.Component<any,any> {
-  constructor() {
-    super();
-  }
-
-  subscription = null;
-
-  componentWillReceiveProps() {
-    if (!this.subscription) {
-      this.subscription = this.props.data.subscribeToMore({
-        document: subscription,
-        updateQuery: (prev, newData) => ({
-          ...prev,
-          queue: newData.subscriptionData.data.queueChanged
-        })
-      })
-    }
-  }
 
   render() {
     return <div
@@ -48,4 +13,4 @@ class MainContainer extends React.Component<any,any> {
   }
 }
 
-export default withQueue(MainContainer);
+export default MainContainer;
